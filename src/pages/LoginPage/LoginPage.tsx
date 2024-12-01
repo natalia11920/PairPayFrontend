@@ -24,9 +24,9 @@ type LoginFormInputs = {
 
 const validationSchema = Yup.object().shape({
   mail: Yup.string()
-    .email("Nieprawidłowy adres mail")
-    .required("Mail jest wymagany"),
-  password: Yup.string().required("Hasło jest wymagane"),
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string().required("Passoword is required"),
 });
 
 const LoginPage = (props: Props) => {

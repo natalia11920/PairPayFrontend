@@ -27,11 +27,11 @@ const validationSchema = Yup.object().shape({
   name: Yup.string().required("Imię jest wymagane"),
   surname: Yup.string().required("Nazwisko jest wymagane"),
   mail: Yup.string()
-    .email("Nieprawidłowy adres mail")
-    .required("Mail jest wymagany"),
+    .email("Invalid email address")
+    .required("Email is required"),
   password: Yup.string()
-    .min(6, "Hasło musi mieć co najmniej 6 znaków")
-    .required("Hasło jest wymagane"),
+    .min(6, "The password must be at least 6 characters long")
+    .required("Passoword is required"),
 });
 
 const RegisterPage = (props: Props) => {
