@@ -1,4 +1,7 @@
-export const EyeSlashFilledIcon = (props) => (
+import { SVGProps } from "react";
+import { JSX } from "react/jsx-runtime";
+
+export const EyeSlashFilledIcon = (props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) => (
     <svg
       aria-hidden="true"
       fill="none"

@@ -9,7 +9,11 @@ interface NavbarProps {
 
 const NavbarComponent: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
   return (
-    <Navbar isBordered isBlurred={false} className="sticky top-0 bg-primary-100 z-50">
+    <Navbar
+      isBordered
+      isBlurred={false}
+      className="sticky top-0 bg-primary-100 z-50"
+    >
       <div className="flex items-center justify-between w-full">
         <NavbarContent className="flex justify-start">
           <NavbarItem className="hidden lg:flex">
