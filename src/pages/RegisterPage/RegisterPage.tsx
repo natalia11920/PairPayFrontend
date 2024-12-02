@@ -1,17 +1,10 @@
 import React from "react";
-import {
-  Button,
-  Input,
-  Checkbox,
-  Link as NextUILink,
-  Divider,
-} from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useAuth } from "../../contexts/AuthContext";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
 type Props = {};
@@ -24,8 +17,8 @@ type RegisterFormInputs = {
 };
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Imię jest wymagane"),
-  surname: Yup.string().required("Nazwisko jest wymagane"),
+  name: Yup.string().required("Name is required"),
+  surname: Yup.string().required("Surname is required"),
   mail: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
