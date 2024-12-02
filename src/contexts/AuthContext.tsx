@@ -84,6 +84,7 @@ export const AuthProvider = ({ children }: Props) => {
           setAccessToken(response?.data.access_token);
           setRefreshToken(response?.data.access_token);
           toast.success("Login Success");
+          navigate("/home");
         }
       })
       .catch((e) => toast.warning("Server error occured"));

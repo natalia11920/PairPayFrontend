@@ -21,7 +21,7 @@ const NavbarComponent = (props: Props) => {
   const { isLoggedIn, logout } = useAuth();
 
   return (
-    <Navbar className="bg-content1">
+    <Navbar isBordered className="bg-content1">
       <NavbarBrand>
         <p className="font-bold text-inherit">PairPay</p>
       </NavbarBrand>
@@ -63,7 +63,7 @@ const NavbarComponent = (props: Props) => {
                   isBordered
                   as="button"
                   className="transition-transform"
-                  color="secondary"
+                  color="primary"
                   name="Jason Hughes"
                   size="sm"
                   src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
