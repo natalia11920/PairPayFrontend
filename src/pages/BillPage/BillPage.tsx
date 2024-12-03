@@ -35,8 +35,8 @@ const BillsPage = (props: Props) => {
     setLoading(true);
     try {
       const [createdResponse, participatedResponse] = await Promise.all([
-        getBillsCreatedAPI(createdPage, 5),
-        getBillsParticipatedAPI(participatedPage, 5),
+        getBillsCreatedAPI(createdPage, 4),
+        getBillsParticipatedAPI(participatedPage, 4),
       ]);
 
       setCreatedBills(createdResponse.bills);
@@ -125,7 +125,7 @@ const BillsPage = (props: Props) => {
 
   return (
     <div className="flex flex-col items-center mt-10">
-      <Card className="w-full max-w-3xl p-6">
+      <Card className="w-full max-w-3xl p-2">
         <CardHeader>
           <h2>Bills Manager</h2>
         </CardHeader>
@@ -143,7 +143,7 @@ const BillsPage = (props: Props) => {
             >
               {tabs.map((tab) => (
                 <Tab key={tab.id} title={tab.label}>
-                  <div className="flex flex-col gap-4">{tab.content}</div>
+                  <div className="flex flex-col gap-3">{tab.content}</div>
                 </Tab>
               ))}
             </Tabs>
@@ -155,7 +155,7 @@ const BillsPage = (props: Props) => {
               totalItems={createdTotalItems}
               currentPage={createdPage}
               onPageChange={handleCreatedPageChange}
-              perPage={5}
+              perPage={4}
             />
           )}
           {activeTab === "participating" && (
@@ -163,7 +163,7 @@ const BillsPage = (props: Props) => {
               totalItems={participatedTotalItems}
               currentPage={participatedPage}
               onPageChange={handleParticipatedPageChange}
-              perPage={5}
+              perPage={4}
             />
           )}
         </CardFooter>

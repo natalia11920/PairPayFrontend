@@ -45,7 +45,7 @@ const LoginPage = (props: Props) => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
-    <div className="flex items-center justify-center min-h-screen from-sky-900 to-slate-800">
+    <div className="flex items-center justify-center h-screen">
       <div className="flex h-full w-full items-center justify-center">
         <div className="flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 pb-10 pt-6 shadow-small">
           <p className="pb-2 text-xl font-medium">Log In</p>
