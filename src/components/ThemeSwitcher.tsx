@@ -21,7 +21,7 @@ export function ThemeSwitcher() {
       isSelected={theme === "dark"}
       onChange={() => setTheme(theme === "dark" ? "light" : "dark")}
       size="sm"
-      color="primary"
+      color="secondary"
       startContent={<SunIcon />}
       endContent={<MoonIcon />}
     ></Switch>

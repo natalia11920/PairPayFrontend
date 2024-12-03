@@ -57,15 +57,13 @@ const LoginPage = (props: Props) => {
               label="Email Address"
               placeholder="Enter your email"
               type="email"
+              isInvalid={!!errors.mail}
+              color={errors.mail ? "danger" : "default"}
+              errorMessage={errors.mail?.message}
               variant="bordered"
               {...register("mail", { required: "Email is required" })}
               className="max-w-xs"
             />
-            {errors.mail ? (
-              <p className="text-red-500 text-sm mt-1">{errors.mail.message}</p>
-            ) : (
-              ""
-            )}
             <Input
               endContent={
                 <button type="button" onClick={toggleVisibility}>
@@ -84,17 +82,13 @@ const LoginPage = (props: Props) => {
               }
               label="Password"
               placeholder="Enter your password"
+              isInvalid={!!errors.password}
+              color={errors.password ? "danger" : "default"}
+              errorMessage={errors.password?.message}
               type={isVisible ? "text" : "password"}
               variant="bordered"
               {...register("password", { required: "Hasło jest wymagane" })}
             />
-            {errors.password ? (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.password.message}
-              </p>
-            ) : (
-              ""
-            )}
             <div className="flex items-center justify-start px-1 py-2">
               {/* <Checkbox name="remember" size="sm">
               Remember me
@@ -103,7 +97,7 @@ const LoginPage = (props: Props) => {
                 Forgot password?
               </Link>
             </div>
-            <Button color="primary" type="submit">
+            <Button color="secondary" type="submit">
               Log In
             </Button>
           </form>

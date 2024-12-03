@@ -6,7 +6,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useAuth } from "../../contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-
 type Props = {};
 
 type RegisterFormInputs = {
@@ -55,12 +54,18 @@ const RegisterPage = (props: Props) => {
               label="Name"
               placeholder="Enter your name"
               variant="bordered"
+              isInvalid={!!errors.name}
+              color={errors.name ? "danger" : "default"}
+              errorMessage={errors.name?.message}
               {...register("name")}
               className="max-w-xs"
             />
             <Input
               label="Surname"
               placeholder="Enter your surname"
+              isInvalid={!!errors.surname}
+              color={errors.surname ? "danger" : "default"}
+              errorMessage={errors.surname?.message}
               variant="bordered"
               {...register("surname")}
               className="max-w-xs"
@@ -68,15 +73,13 @@ const RegisterPage = (props: Props) => {
             <Input
               label="Email"
               placeholder="Enter your email"
+              isInvalid={!!errors.mail}
+              color={errors.mail ? "danger" : "default"}
+              errorMessage={errors.mail?.message}
               variant="bordered"
               {...register("mail")}
               className="max-w-xs"
             />
-            {errors.mail ? (
-              <p className="text-red-500 text-sm mt-1">{errors.mail.message}</p>
-            ) : (
-              ""
-            )}
             <Input
               endContent={
                 <button type="button" onClick={toggleVisibility}>
@@ -95,18 +98,14 @@ const RegisterPage = (props: Props) => {
               }
               label="Password"
               placeholder="Enter your password"
+              isInvalid={!!errors.password}
+              color={errors.password ? "danger" : "default"}
+              errorMessage={errors.password?.message}
               type={isVisible ? "text" : "password"}
               variant="bordered"
               {...register("password", { required: "Password is required" })}
             />
-            {errors.password ? (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.password.message}
-              </p>
-            ) : (
-              ""
-            )}
-            <Button color="primary" type="submit">
+            <Button color="secondary" type="submit">
               Sign Up
             </Button>
           </form>

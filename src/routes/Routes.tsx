@@ -4,15 +4,16 @@ import App from "../App";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "../pages/HomePage/HomePage";
+import BillsPage from "../pages/BillPage/BillPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-      //   { path: "", element: <HomePage /> },
       { path: "login", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
+      // { path: "bills", element: <BillsPage /> },
       {
         path: "home",
         element: (
@@ -20,7 +21,14 @@ export const router = createBrowserRouter([
             <HomePage />
           </ProtectedRoute>
         ),
-        children: [],
+      },
+      {
+        path: "bills",
+        element: (
+          <ProtectedRoute>
+            <BillsPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
