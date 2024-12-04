@@ -4,7 +4,7 @@ import apiClient from "./ApiClient";
 
 export const getBillsCreatedAPI = async (
   page: number = 1,
-  perPage: number = 5
+  perPage: number = 4
 ): Promise<{
   bills: BillDisplay[];
   totalItems: number;

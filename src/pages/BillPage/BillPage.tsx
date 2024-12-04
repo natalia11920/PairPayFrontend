@@ -13,7 +13,7 @@ import {
   getBillsCreatedAPI,
   getBillsParticipatedAPI,
 } from "../../services/BillServices";
-import { PaginationComponent } from "../../components/PaginationComponent";
+import { PaginationComponent } from "../../components/Pagination/PaginationComponent";
 
 type Props = {};
 

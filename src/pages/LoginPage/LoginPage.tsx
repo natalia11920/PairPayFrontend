@@ -1,13 +1,7 @@
 "use client";
 
-import React from "react";
-import {
-  Button,
-  Input,
-  Checkbox,
-  Link as NextUILink,
-  Divider,
-} from "@nextui-org/react";
+import { useState } from "react";
+import { Button, Input, Divider, Spinner } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -26,26 +20,38 @@ const validationSchema = Yup.object().shape({
   mail: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  password: Yup.string().required("Passoword is required"),
+  password: Yup.string().required("Password is required"),
 });
 
 const LoginPage = (props: Props) => {
-  const { loginUser, isLoggedIn } = useAuth();
+  const { loginUser } = useAuth();
+  const [isVisible, setIsVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormInputs>({ resolver: yupResolver(validationSchema) });
 
-  const handleLogin = (form: LoginFormInputs) => {
-    loginUser(form.mail, form.password);
-  };
-  const [isVisible, setIsVisible] = React.useState(false);
-
   const toggleVisibility = () => setIsVisible(!isVisible);
 
+  const handleLogin = async (form: LoginFormInputs) => {
+    setLoading(true);
+    try {
+      await loginUser(form.mail, form.password);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="relative flex items-center justify-center h-screen">
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <Spinner size="lg" color="secondary" />
+        </div>
+      )}
       <div className="flex h-full w-full items-center justify-center">
         <div className="flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 pb-10 pt-6 shadow-small">
           <p className="pb-2 text-xl font-medium">Log In</p>
@@ -87,17 +93,14 @@ const LoginPage = (props: Props) => {
               errorMessage={errors.password?.message}
               type={isVisible ? "text" : "password"}
               variant="bordered"
-              {...register("password", { required: "Hasło jest wymagane" })}
+              {...register("password", { required: "Password is required" })}
             />
             <div className="flex items-center justify-start px-1 py-2">
-              {/* <Checkbox name="remember" size="sm">
-              Remember me
-            </Checkbox> */}
-              <Link className="text-default-500 text-sm " to="#">
+              <Link className="text-default-500 text-sm" to="#">
                 Forgot password?
               </Link>
             </div>
-            <Button color="secondary" type="submit">
+            <Button color="secondary" type="submit" disabled={loading}>
               Log In
             </Button>
           </form>
