@@ -5,6 +5,7 @@ import LoginPage from "../pages/LoginPage/LoginPage";
 import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "../pages/HomePage/HomePage";
 import BillsPage from "../pages/BillPage/BillPage";
+import SettingsPage from "../pages/SettingsPage/SettingsPage";
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +28,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <BillsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "settings",
+        element: (
+          <ProtectedRoute>
+            <SettingsPage />
           </ProtectedRoute>
         ),
       },
