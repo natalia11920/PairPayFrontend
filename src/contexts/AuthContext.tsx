@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { User } from "../types/User";
 import { useNavigate } from "react-router-dom";
-import { loginAPI, registerAPI } from "../services/AuthServices";
+import { loginAPI, logoutAPI, registerAPI } from "../services/AuthServices";
 import { toast } from "react-toastify";
 import React from "react";
 import axios from "axios";
@@ -94,7 +94,8 @@ export const AuthProvider = ({ children }: Props) => {
     return !!accessToken;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await logoutAPI();
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     // setUser(null);

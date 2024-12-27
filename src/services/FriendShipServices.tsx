@@ -1,4 +1,5 @@
 import { handleError } from "../helpers/ErrorHandler";
+import { Friend, FriendsResponse } from "../types/Friends";
 import apiClient from "./ApiClient";
 
 export const getPendingRequestsAPI = async () => {
@@ -31,10 +32,20 @@ export const declineRequestAPI = async (id: number) => {
   }
 };
 
-export const getFriendsAPI = async () => {
+export const getFriendsAPI = async (): Promise<Friend[]> => {
   try {
-    const { data } = await apiClient.get("/api/friends");
+    const { data } = await apiClient.get<FriendsResponse>("/api/friends");
     return data.friends;
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+};
+
+export const sendFriendRequestAPI = async (mail: string) => {
+  try {
+    const { data } = await apiClient.post("/api/send_request", { mail });
+    return data;
   } catch (error) {
     handleError(error);
     throw error;

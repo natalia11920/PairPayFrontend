@@ -26,8 +26,6 @@ export function PaginationComponent({
     setLocalPage(currentPage);
   }, [currentPage]);
 
-  console.log(currentPage);
-
   return (
     <div className="flex flex-wrap gap-4 items-center">
       <Pagination

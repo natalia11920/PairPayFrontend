@@ -102,8 +102,8 @@ const NavbarComponent = (props: Props) => {
                   </DropdownItem>
                   <DropdownItem
                     key="friends"
-                    textValue="My Bills"
-                    onClick={() => navigate("home")}
+                    textValue="My Friends"
+                    onClick={() => navigate("friends")}
                   >
                     Friends
                   </DropdownItem>

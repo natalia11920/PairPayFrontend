@@ -111,7 +111,7 @@ const BillsPage = (props: Props) => {
     <div className="flex flex-col items-center mt-10">
       <Card className="w-full max-w-3xl p-2">
         <CardHeader>
-          <h2>Bills Manager</h2>
+          <h2 className="text-2xl font-bold">Bills Manager</h2>
         </CardHeader>
         <CardBody>
           {loading ? (

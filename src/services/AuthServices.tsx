@@ -46,3 +46,11 @@ export const registerAPI = async (
     handleError(error);
   }
 };
+
+export const logoutAPI = async () => {
+  try {
+    await axios.delete(api + "/logout");
+  } catch (error) {
+    handleError(error);
+  }
+};
