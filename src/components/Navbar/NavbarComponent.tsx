@@ -25,7 +25,9 @@ const NavbarComponent = (props: Props) => {
   return (
     <Navbar isBordered isBlurred className="bg-content1">
       <NavbarBrand>
-        <p className="font-bold text-inherit">PairPay</p>
+        <NextUILink className="font-bold text-inherit" as={Link} to="/home">
+          PairPay
+        </NextUILink>
       </NavbarBrand>
       {/* 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
@@ -61,7 +63,7 @@ const NavbarComponent = (props: Props) => {
           </>
         ) : (
           <NavbarItem>
-            <div className="flex">
+            <div className="flex items-center gap-4">
               <NotificationDropdown />
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>

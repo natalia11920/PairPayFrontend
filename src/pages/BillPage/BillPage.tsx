@@ -7,7 +7,7 @@ import {
   Spinner,
   CardFooter,
 } from "@nextui-org/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { BillDisplay } from "../../types/Bill";
 import {
   getBillsCreatedAPI,
@@ -22,7 +22,6 @@ const BillsPage = (props: Props) => {
   const [participatedBills, setParticipatedBills] = useState<BillDisplay[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedBill, setSelectedBill] = useState<BillDisplay | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [createdPage, setCreatedPage] = useState(1);
   const [participatedPage, setParticipatedPage] = useState(1);
@@ -30,19 +29,21 @@ const BillsPage = (props: Props) => {
   const [participatedTotalItems, setParticipatedTotalItems] = useState(0);
 
   const [activeTab, setActiveTab] = useState<string>("created");
-
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [createdResponse, participatedResponse] = await Promise.all([
-        getBillsCreatedAPI(createdPage, 4),
-        getBillsParticipatedAPI(participatedPage, 4),
-      ]);
-
-      setCreatedBills(createdResponse.bills);
-      setCreatedTotalItems(createdResponse.totalItems);
-      setParticipatedBills(participatedResponse.bills);
-      setParticipatedTotalItems(participatedResponse.totalItems);
+      if (activeTab === "created") {
+        const createdResponse = await getBillsCreatedAPI(createdPage, 4);
+        setCreatedBills(createdResponse.bills);
+        setCreatedTotalItems(createdResponse.totalItems);
+      } else {
+        const participatedResponse = await getBillsParticipatedAPI(
+          participatedPage,
+          4
+        );
+        setParticipatedBills(participatedResponse.bills);
+        setParticipatedTotalItems(participatedResponse.totalItems);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -52,17 +53,7 @@ const BillsPage = (props: Props) => {
 
   useEffect(() => {
     fetchData();
-  }, [createdPage, participatedPage]);
-
-  const openModal = (bill: BillDisplay) => {
-    setSelectedBill(bill);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setSelectedBill(null);
-    setIsModalOpen(false);
-  };
+  }, [activeTab, createdPage, participatedPage]);
 
   const handleCreatedPageChange = (page: number) => {
     setCreatedPage(page);
@@ -72,56 +63,49 @@ const BillsPage = (props: Props) => {
     setParticipatedPage(page);
   };
 
-  const tabs = [
-    {
-      id: "created",
-      label: "Created Bills",
-      content: createdBills.length ? (
-        createdBills.map((bill) => (
-          <Card
-            key={bill.id}
-            isPressable
-            className="mb-4"
-            onClick={() => openModal(bill)}
-          >
-            <CardHeader>
-              <h3>{bill.name}</h3>
-            </CardHeader>
-            <CardBody>
-              <p>Amount: ${bill.total_sum}</p>
-              <p>Created: {new Date(bill.created_at).toLocaleString()}</p>
-            </CardBody>
-          </Card>
-        ))
-      ) : (
-        <p>No created bills found.</p>
-      ),
-    },
-    {
-      id: "participating",
-      label: "Participating Bills",
-      content: participatedBills.length ? (
-        participatedBills.map((bill) => (
-          <Card
-            key={bill.id}
-            isPressable
-            className="mb-4"
-            onClick={() => openModal(bill)}
-          >
-            <CardHeader>
-              <h3>{bill.name}</h3>
-            </CardHeader>
-            <CardBody>
-              <p>Amount: ${bill.total_sum}</p>
-              <p>Created: {new Date(bill.created_at).toLocaleString()}</p>
-            </CardBody>
-          </Card>
-        ))
-      ) : (
-        <p>No participating bills found.</p>
-      ),
-    },
-  ];
+  const tabs = useMemo(
+    () => [
+      {
+        id: "created",
+        label: "Created Bills",
+        content: createdBills.length ? (
+          createdBills.map((bill) => (
+            <Card key={bill.id} isPressable className="mb-4">
+              <CardHeader>
+                <h3>{bill.name}</h3>
+              </CardHeader>
+              <CardBody>
+                <p>Amount: ${bill.total_sum}</p>
+                <p>Created: {new Date(bill.created_at).toLocaleString()}</p>
+              </CardBody>
+            </Card>
+          ))
+        ) : (
+          <p>No created bills found.</p>
+        ),
+      },
+      {
+        id: "participating",
+        label: "Participating Bills",
+        content: participatedBills.length ? (
+          participatedBills.map((bill) => (
+            <Card key={bill.id} isPressable className="mb-4">
+              <CardHeader>
+                <h3>{bill.name}</h3>
+              </CardHeader>
+              <CardBody>
+                <p>Amount: ${bill.total_sum}</p>
+                <p>Created: {new Date(bill.created_at).toLocaleString()}</p>
+              </CardBody>
+            </Card>
+          ))
+        ) : (
+          <p>No participating bills found.</p>
+        ),
+      },
+    ],
+    [createdBills, participatedBills]
+  );
 
   return (
     <div className="flex flex-col items-center mt-10">

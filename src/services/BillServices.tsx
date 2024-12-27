@@ -12,16 +12,16 @@ export const getBillsCreatedAPI = async (
   totalPages: number;
 }> => {
   try {
-    const response = await apiClient.get("/api/bills/created", {
+    const { data } = await apiClient.get("/api/bills/created", {
       params: { page, perPage },
     });
-    console.log(response.data);
+    console.log(data);
 
     return {
-      bills: response.data.bills as BillDisplay[],
-      totalItems: response.data.total_items,
-      currentPage: response.data.current_page,
-      totalPages: response.data.total_pages,
+      bills: data.bills as BillDisplay[],
+      totalItems: data.total_items,
+      currentPage: data.current_page,
+      totalPages: data.total_pages,
     };
   } catch (error) {
     handleError(error);
@@ -39,16 +39,16 @@ export const getBillsParticipatedAPI = async (
   totalPages: number;
 }> => {
   try {
-    const response = await apiClient.get("/api/bills/assigned", {
+    const { data } = await apiClient.get("/api/bills/assigned", {
       params: { page, perPage },
     });
-    console.log(response.data);
+    console.log(data);
 
     return {
-      bills: response.data.bills as BillDisplay[],
-      totalItems: response.data.total_items,
-      currentPage: response.data.current_page,
-      totalPages: response.data.total_pages,
+      bills: data.bills as BillDisplay[],
+      totalItems: data.total_items,
+      currentPage: data.current_page,
+      totalPages: data.total_pages,
     };
   } catch (error) {
     handleError(error);
