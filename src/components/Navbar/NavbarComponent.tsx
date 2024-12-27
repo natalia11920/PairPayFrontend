@@ -19,9 +19,8 @@ import NotificationDropdown from "../NotificationDropdown/NotificationDropdownCo
 interface Props {}
 
 const NavbarComponent = (props: Props) => {
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, user } = useAuth();
   const navigate = useNavigate();
-  const {loginUser} = useAuth();
 
   return (
     <Navbar isBordered isBlurred className="bg-content1">
@@ -89,7 +88,7 @@ const NavbarComponent = (props: Props) => {
                     textValue="My Bills"
                   >
                     <p className="font-semibold">Signed in as</p>
-                    <p className="font-semibold">{}</p>
+                    <p className="font-semibold">{user?.mail}</p>
                   </DropdownItem>
                   <DropdownItem
                     key="settings"

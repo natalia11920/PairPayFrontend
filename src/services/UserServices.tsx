@@ -82,17 +82,9 @@ export const updateUsersByAdmin = async (
   updateUserData: Partial<User>
 ): Promise<void> => {
   try {
-    const jwtToken = localStorage.getItem("jwt");
-
     const response = await apiClient.post(
       "/api/user/admin/update",
-      updateUserData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwtToken}`,
-        },
-      }
+      updateUserData
     );
 
     console.log("User updated successfully:", response.data);

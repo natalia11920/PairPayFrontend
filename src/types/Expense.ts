@@ -4,5 +4,5 @@ export type ExpenseDisplay = {
   name: string;
   currency: string;
   price: number;
-  //   payer: User;
+  payer: User;
 };

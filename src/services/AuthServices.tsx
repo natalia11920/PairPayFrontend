@@ -49,7 +49,11 @@ export const registerAPI = async (
 
 export const logoutAPI = async () => {
   try {
-    await axios.delete(api + "/logout");
+    await axios.delete(api + "/logout", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
   } catch (error) {
     handleError(error);
   }

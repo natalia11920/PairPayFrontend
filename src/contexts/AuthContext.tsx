@@ -7,7 +7,7 @@ import React from "react";
 import axios from "axios";
 
 type AuthContextType = {
-  // user: User | null;
+  user: User | null;
   accessToken: string | null;
   refreshToken: string | null;
   registerUser: (
@@ -29,19 +29,21 @@ export const AuthProvider = ({ children }: Props) => {
   const navigate = useNavigate();
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
-  // const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // const user = localStorage.getItem("user");
-    const accessToken = localStorage.getItem("accessToken");
+    const storedUser = localStorage.getItem("user");
+    const storedAccessToken = localStorage.getItem("accessToken");
+    const storedRefreshToken = localStorage.getItem("refreshToken");
 
-    // if (user && accessToken) {
-    if (accessToken) {
-      // setUser(JSON.parse(user));
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
-      axios.defaults.headers.common["Authorization"] = "Bearer " + accessToken;
+    if (storedUser && storedAccessToken) {
+      setUser(JSON.parse(storedUser));
+      setAccessToken(storedAccessToken);
+      setRefreshToken(storedRefreshToken);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${storedAccessToken}`;
     }
     setIsReady(true);
   }, []);
@@ -72,22 +74,31 @@ export const AuthProvider = ({ children }: Props) => {
     await loginAPI(email, password)
       .then((response) => {
         if (response) {
-          console.log(response);
-          localStorage.setItem("accessToken", response?.data.access_token);
-          localStorage.setItem("refreshToken", response?.data.refresh_token);
+          const userObj = {
+            id: response.data.user.id,
+            name: response.data.user.name,
+            surname: response.data.user.surname,
+            mail: response.data.user.mail,
+            admin: response.data.user.admin,
+          };
 
-          // const userObj = {
-          //   name: response?.data.name,
-          //   surname: response?.data.surname,
-          //   email: response?.data.email,
-          // };
-          setAccessToken(response?.data.access_token);
-          setRefreshToken(response?.data.access_token);
+          localStorage.setItem("user", JSON.stringify(userObj));
+          localStorage.setItem("accessToken", response.data.access_token);
+          localStorage.setItem("refreshToken", response.data.refresh_token);
+
+          setAccessToken(response.data.access_token);
+          setRefreshToken(response.data.refresh_token);
+          setUser(userObj);
+
+          axios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${response.data.access_token}`;
+
           toast.success("Login Success");
           navigate("/home");
         }
       })
-      .catch((e) => toast.warning("Server error occured"));
+      .catch((e) => toast.warning("Server error occurred"));
   };
 
   const isLoggedIn = () => {
@@ -98,9 +109,10 @@ export const AuthProvider = ({ children }: Props) => {
     await logoutAPI();
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    // setUser(null);
-    setAccessToken("");
-    setRefreshToken("");
+    localStorage.removeItem("user");
+    setUser(null);
+    setAccessToken(null);
+    setRefreshToken(null);
     navigate("/");
   };
 
@@ -108,7 +120,7 @@ export const AuthProvider = ({ children }: Props) => {
     <AuthContext.Provider
       value={{
         loginUser,
-        // user,
+        user,
         accessToken,
         refreshToken,
         registerUser,

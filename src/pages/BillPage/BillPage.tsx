@@ -18,6 +18,7 @@ import {
 import { PaginationComponent } from "../../components/Pagination/PaginationComponent";
 import { toast } from "react-toastify";
 import { CreateBillModal } from "../../components/CreateBillModal/CreateBillModal";
+import { BillDetailsModal } from "../../components/BillDetailsModal/BillDetailsModal";
 
 type Props = {};
 
@@ -25,7 +26,7 @@ const BillsPage = (props: Props) => {
   const [createdBills, setCreatedBills] = useState<BillDisplay[]>([]);
   const [participatedBills, setParticipatedBills] = useState<BillDisplay[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedBill, setSelectedBill] = useState<BillDisplay | null>(null);
+  // const [selectedBill, setSelectedBill] = useState<BillDisplay | null>(null);
 
   const [createdPage, setCreatedPage] = useState(1);
   const [participatedPage, setParticipatedPage] = useState(1);
@@ -34,6 +35,8 @@ const BillsPage = (props: Props) => {
 
   const [activeTab, setActiveTab] = useState<string>("created");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectedBillId, setSelectedBillId] = useState<number | null>(null);
 
   const handleCreateBill = async (billData: BillCreate) => {
     try {
@@ -90,6 +93,10 @@ const BillsPage = (props: Props) => {
     setParticipatedPage(page);
   };
 
+  const handleBillClick = (billId: number) => {
+    setSelectedBillId(billId);
+  };
+
   const tabs = useMemo(
     () => [
       {
@@ -97,7 +104,12 @@ const BillsPage = (props: Props) => {
         label: "Created Bills",
         content: createdBills.length ? (
           createdBills.map((bill) => (
-            <Card key={bill.id} isPressable className="mb-4">
+            <Card
+              key={bill.id}
+              isPressable
+              className="mb-4"
+              onPress={() => handleBillClick(bill.id)}
+            >
               <CardHeader>
                 <h3>{bill.name}</h3>
               </CardHeader>
@@ -116,7 +128,12 @@ const BillsPage = (props: Props) => {
         label: "Participating Bills",
         content: participatedBills.length ? (
           participatedBills.map((bill) => (
-            <Card key={bill.id} isPressable className="mb-4">
+            <Card
+              key={bill.id}
+              isPressable
+              className="mb-4"
+              onPress={() => handleBillClick(bill.id)}
+            >
               <CardHeader>
                 <h3>{bill.name}</h3>
               </CardHeader>
@@ -187,6 +204,11 @@ const BillsPage = (props: Props) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleCreateBill}
+      />
+      <BillDetailsModal
+        isOpen={!!selectedBillId}
+        onClose={() => setSelectedBillId(null)}
+        billId={selectedBillId}
       />
     </div>
   );

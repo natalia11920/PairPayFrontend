@@ -1,5 +1,5 @@
 import { handleError } from "../helpers/ErrorHandler";
-import { BillCreate, BillDisplay } from "../types/Bill";
+import { BillCreate, BillDetails, BillDisplay } from "../types/Bill";
 import apiClient from "./ApiClient";
 
 export const getBillsCreatedAPI = async (
@@ -62,5 +62,18 @@ export const createBillAPI = async (bill: BillCreate) => {
     return data;
   } catch (error) {
     handleError(error);
+  }
+};
+
+export const getBillDetailsAPI = async (
+  billId: number
+): Promise<BillDetails> => {
+  try {
+    const { data } = await apiClient.get(`/api/bills/${billId}`);
+    const bill = data.bill as BillDetails;
+    return bill;
+  } catch (error) {
+    handleError(error);
+    throw error;
   }
 };
