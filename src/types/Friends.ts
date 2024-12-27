@@ -6,6 +6,8 @@ export interface DebtInfo {
 
 export interface Friend {
   id: number;
+  name: string;
+  surname: string;
   mail: string;
   debt_info: DebtInfo;
 }

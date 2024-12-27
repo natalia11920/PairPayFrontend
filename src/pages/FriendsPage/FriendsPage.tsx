@@ -18,7 +18,11 @@ import {
   sendFriendRequestAPI,
 } from "../../services/FriendShipServices";
 import { Friend } from "../../types/Friends";
-import { getUsersEmailsAPI } from "../../services/UserServices";
+import {
+  getUserInfoByEmailAPI,
+  getUsersEmailsAPI,
+} from "../../services/UserServices";
+import { toast } from "react-toastify";
 
 const FriendsPage = () => {
   const [friends, setFriends] = useState<Friend[]>([]);
@@ -28,23 +32,25 @@ const FriendsPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [emailSuggestions, setEmailSuggestions] = useState<string[]>([]);
   const [allEmails, setAllEmails] = useState<string[]>([]);
+  const [selectedUserInfo, setSelectedUserInfo] = useState<Friend | null>();
+  const [loadingUserInfo, setLoadingUserInfo] = useState(false);
+
+  const fetchFriends = async () => {
+    setLoading(true);
+    try {
+      const friendsData = await getFriendsAPI();
+      setFriends(friendsData);
+
+      const indexedEmails = await fetchIndexedEmails();
+      setAllEmails(indexedEmails);
+    } catch (error) {
+      toast.error("Error fetching friends or emails:");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchFriends = async () => {
-      setLoading(true);
-      try {
-        const friendsData = await getFriendsAPI();
-        setFriends(friendsData);
-
-        const indexedEmails = await fetchIndexedEmails();
-        setAllEmails(indexedEmails);
-      } catch (error) {
-        console.error("Error fetching friends or emails:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchFriends();
   }, []);
 
@@ -100,11 +106,32 @@ const FriendsPage = () => {
       : `You owe $${amount.toFixed(2)}`;
   };
 
+  const fetchUserInfo = async (email: string) => {
+    setLoadingUserInfo(true);
+    try {
+      const userInfo = await getUserInfoByEmailAPI(email);
+      setSelectedUserInfo(userInfo);
+    } catch (error) {
+      toast.error("Failed to fetch user info.");
+    } finally {
+      setLoadingUserInfo(false);
+    }
+  };
+
+  const handleEmailSelection = (email: string) => {
+    setNewFriendEmail(email);
+    setEmailSuggestions([]);
+    fetchUserInfo(email);
+  };
+
   return (
     <div className="flex flex-col items-center mt-10">
       <Card className="w-full max-w-3xl p-2">
-        <CardHeader>
+        <CardHeader className="flex flex-row justify-between">
           <h2 className="text-2xl font-bold">Friends List</h2>
+          <Button color="secondary" onPress={onOpen}>
+            Add New Friend
+          </Button>
         </CardHeader>
         <CardBody>
           {loading ? (
@@ -136,12 +163,7 @@ const FriendsPage = () => {
         </CardBody>
       </Card>
 
-      <Button color="secondary" onPress={onOpen}>
-        Add New Friend
-      </Button>
-
-      {/* Modal for adding a new friend */}
-      <Modal backdrop="blur" isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalContent>
           {(onClose) => (
             <>
@@ -163,20 +185,31 @@ const FriendsPage = () => {
                         <li
                           key={email}
                           className="cursor-pointer p-1 rounded hover:bg-gray-600"
-                          onClick={() => {
-                            setNewFriendEmail(email);
-                            setEmailSuggestions([]);
-                          }}
+                          onClick={() => handleEmailSelection(email)}
                         >
                           {email}
                         </li>
                       ))}
                     </ul>
                   )}
+                  {loadingUserInfo ? (
+                    <Spinner size="sm" />
+                  ) : selectedUserInfo ? (
+                    <div className="p-4 rounded">
+                      <Card className="w-full max-w-3xl p-2">
+                        <p className="text-lg font-bold">User Details:</p>
+                        <p>Name: {selectedUserInfo.name}</p>
+                        <p>Surname: {selectedUserInfo.surname}</p>
+                        <p>Email: {selectedUserInfo.mail}</p>
+                      </Card>
+                    </div>
+                  ) : null}
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button onClick={onClose}>Cancel</Button>
+                <Button color="danger" variant="light" onClick={onClose}>
+                  Cancel
+                </Button>
                 <Button color="secondary" onClick={handleSendFriendRequest}>
                   Send Request
                 </Button>

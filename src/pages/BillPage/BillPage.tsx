@@ -6,14 +6,18 @@ import {
   Tab,
   Spinner,
   CardFooter,
+  Button,
 } from "@nextui-org/react";
 import { useState, useEffect, useMemo } from "react";
-import { BillDisplay } from "../../types/Bill";
+import { BillCreate, BillDisplay } from "../../types/Bill";
 import {
+  createBillAPI,
   getBillsCreatedAPI,
   getBillsParticipatedAPI,
 } from "../../services/BillServices";
 import { PaginationComponent } from "../../components/Pagination/PaginationComponent";
+import { toast } from "react-toastify";
+import { CreateBillModal } from "../../components/CreateBillModal/CreateBillModal";
 
 type Props = {};
 
@@ -29,6 +33,29 @@ const BillsPage = (props: Props) => {
   const [participatedTotalItems, setParticipatedTotalItems] = useState(0);
 
   const [activeTab, setActiveTab] = useState<string>("created");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCreateBill = async (billData: BillCreate) => {
+    try {
+      setLoading(true);
+      const response = await createBillAPI(billData);
+      if (activeTab === "created") {
+        await fetchData();
+      }
+
+      setIsModalOpen(false);
+      toast.success("Bill created successfully!");
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`Error creating bill: ${error.message}`);
+      } else {
+        toast.error("Error creating bill. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -45,7 +72,7 @@ const BillsPage = (props: Props) => {
         setParticipatedTotalItems(participatedResponse.totalItems);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      toast.error(`Error fetching data`);
     } finally {
       setLoading(false);
     }
@@ -110,8 +137,11 @@ const BillsPage = (props: Props) => {
   return (
     <div className="flex flex-col items-center mt-10">
       <Card className="w-full max-w-3xl p-2">
-        <CardHeader>
+        <CardHeader className="flex flex-row justify-between">
           <h2 className="text-2xl font-bold">Bills Manager</h2>
+          <Button color="secondary" onPress={() => setIsModalOpen(true)}>
+            Create new bill
+          </Button>
         </CardHeader>
         <CardBody>
           {loading ? (
@@ -152,6 +182,12 @@ const BillsPage = (props: Props) => {
           )}
         </CardFooter>
       </Card>
+
+      <CreateBillModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleCreateBill}
+      />
     </div>
   );
 };

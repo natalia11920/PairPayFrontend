@@ -17,3 +17,8 @@ export type BillDetails = {
   users: User;
   expenses: ExpenseDisplay;
 };
+
+export type BillCreate = {
+  name: string;
+  label: string;
+};

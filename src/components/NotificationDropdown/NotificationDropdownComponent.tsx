@@ -8,8 +8,8 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { NotificationIcon } from "../../assets/NotificationIcon";
-import { Icon } from "@iconify/react"; // Import Iconify's Icon component
-import { useState } from "react";
+import { Icon } from "@iconify/react";
+import { useState, useEffect } from "react";
 import {
   acceptRequestAPI,
   declineRequestAPI,
@@ -40,6 +40,16 @@ const NotificationDropdown = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchInvitations();
+
+    const pollInterval = setInterval(() => {
+      fetchInvitations();
+    }, 30000);
+
+    return () => clearInterval(pollInterval);
+  }, []);
 
   const handleAccept = async (id: number) => {
     try {
