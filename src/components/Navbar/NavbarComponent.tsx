@@ -21,6 +21,7 @@ interface Props {}
 const NavbarComponent = (props: Props) => {
   const { isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
+  const {loginUser} = useAuth();
 
   return (
     <Navbar isBordered isBlurred className="bg-content1">
@@ -88,12 +89,12 @@ const NavbarComponent = (props: Props) => {
                     textValue="My Bills"
                   >
                     <p className="font-semibold">Signed in as</p>
-                    <p className="font-semibold">zoey@example.com</p>
+                    <p className="font-semibold">{}</p>
                   </DropdownItem>
                   <DropdownItem
                     key="settings"
                     textValue="My Settings"
-                    onClick={() => navigate("home")}
+                    onClick={() => navigate("settings")}
                   >
                     Settings
                   </DropdownItem>
