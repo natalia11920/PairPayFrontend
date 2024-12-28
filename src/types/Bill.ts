@@ -6,6 +6,7 @@ export type BillDisplay = {
   name: string;
   total_sum: number;
   created_at: string;
+  status: string;
 };
 
 export type BillDetails = {

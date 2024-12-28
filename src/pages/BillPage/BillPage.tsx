@@ -7,6 +7,11 @@ import {
   Spinner,
   CardFooter,
   Button,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "@nextui-org/react";
 import { useState, useEffect, useMemo } from "react";
 import { BillCreate, BillDisplay } from "../../types/Bill";
@@ -14,6 +19,7 @@ import {
   createBillAPI,
   getBillsCreatedAPI,
   getBillsParticipatedAPI,
+  deleteBillAPI,
 } from "../../services/BillServices";
 import { PaginationComponent } from "../../components/Pagination/PaginationComponent";
 import { toast } from "react-toastify";
@@ -26,7 +32,6 @@ const BillsPage = (props: Props) => {
   const [createdBills, setCreatedBills] = useState<BillDisplay[]>([]);
   const [participatedBills, setParticipatedBills] = useState<BillDisplay[]>([]);
   const [loading, setLoading] = useState(true);
-  // const [selectedBill, setSelectedBill] = useState<BillDisplay | null>(null);
 
   const [createdPage, setCreatedPage] = useState(1);
   const [participatedPage, setParticipatedPage] = useState(1);
@@ -35,6 +40,8 @@ const BillsPage = (props: Props) => {
 
   const [activeTab, setActiveTab] = useState<string>("created");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [billToDelete, setBillToDelete] = useState<number | null>(null);
 
   const [selectedBillId, setSelectedBillId] = useState<number | null>(null);
 
@@ -57,6 +64,28 @@ const BillsPage = (props: Props) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteBill = async () => {
+    if (!billToDelete) return;
+
+    try {
+      setLoading(true);
+      await deleteBillAPI(billToDelete);
+      await fetchData();
+      setIsDeleteModalOpen(false);
+      setBillToDelete(null);
+      toast.success("Bill deleted successfully!");
+    } catch (error) {
+      toast.error("Error deleting bill. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openDeleteModal = (billId: number) => {
+    setBillToDelete(billId);
+    setIsDeleteModalOpen(true);
   };
 
   const fetchData = async () => {
@@ -110,7 +139,7 @@ const BillsPage = (props: Props) => {
               className="mb-4"
               onPress={() => handleBillClick(bill.id)}
             >
-              <CardHeader>
+              <CardHeader className="flex justify-between items-center">
                 <h3>{bill.name}</h3>
               </CardHeader>
               <CardBody>
@@ -180,7 +209,7 @@ const BillsPage = (props: Props) => {
             </Tabs>
           )}
         </CardBody>
-        <CardFooter style={{ display: "flex", justifyContent: "flex-end" }}>
+        <CardFooter className="flex justify-end">
           {activeTab === "created" && (
             <PaginationComponent
               totalItems={createdTotalItems}
@@ -209,7 +238,30 @@ const BillsPage = (props: Props) => {
         isOpen={!!selectedBillId}
         onClose={() => setSelectedBillId(null)}
         billId={selectedBillId}
+        onBillDeleted={fetchData}
       />
+
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+      >
+        <ModalContent>
+          <ModalHeader>Confirm Deletion</ModalHeader>
+          <ModalBody>Are you sure you want to delete this bill?</ModalBody>
+          <ModalFooter>
+            <Button
+              color="default"
+              variant="light"
+              onPress={() => setIsDeleteModalOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button color="danger" onPress={handleDeleteBill}>
+              Delete
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

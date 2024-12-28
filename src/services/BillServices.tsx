@@ -65,6 +65,17 @@ export const createBillAPI = async (bill: BillCreate) => {
   }
 };
 
+export const deleteBillAPI = async (billId: number) => {
+  try {
+    const { data } = await apiClient.delete(`/api/bills/${billId}`);
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const inviteToBIllAPI = async () => {};
+
 export const getBillDetailsAPI = async (
   billId: number
 ): Promise<BillDetails> => {

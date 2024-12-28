@@ -46,7 +46,7 @@ const LoginPage = (props: Props) => {
   };
 
   return (
-    <div className="relative flex items-center justify-center h-screen">
+    <div className="flex flex-col items-center mt-40">
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <Spinner size="lg" color="secondary" />

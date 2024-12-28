@@ -15,6 +15,7 @@ import {
   declineRequestAPI,
   getPendingRequestsAPI,
 } from "../../services/FriendShipServices";
+import { toast } from "react-toastify";
 
 const NotificationDropdown = () => {
   const [invitations, setInvitations] = useState<
@@ -35,7 +36,7 @@ const NotificationDropdown = () => {
         }))
       );
     } catch (error) {
-      console.error("Failed to fetch pending requests:", error);
+      toast.error("Failed to fetch pending requests");
     } finally {
       setLoading(false);
     }
@@ -46,7 +47,7 @@ const NotificationDropdown = () => {
 
     const pollInterval = setInterval(() => {
       fetchInvitations();
-    }, 30000);
+    }, 100000);
 
     return () => clearInterval(pollInterval);
   }, []);
@@ -56,7 +57,7 @@ const NotificationDropdown = () => {
       await acceptRequestAPI(id);
       setAcceptedIds((prev) => [...prev, id]);
     } catch (error) {
-      console.error("Failed to accept request:", error);
+      toast.error("Failed to accept request");
     }
   };
 
@@ -67,7 +68,7 @@ const NotificationDropdown = () => {
         prev.filter((invitation) => invitation.id !== id)
       );
     } catch (error) {
-      console.error("Failed to decline request:", error);
+      toast.error("Failed to decline request");
     }
   };
 
@@ -111,31 +112,30 @@ const NotificationDropdown = () => {
             <p>No invitations</p>
           ) : (
             invitations.map((invitation) => (
-              <Card
-                key={invitation.id}
-                className="p-2 mb-2 mt-2 w-full" // Set consistent width
-              >
+              <Card key={invitation.id} className="p-2 mb-2 mt-2 w-full">
                 <div className="flex items-center justify-between">
                   <p>{invitation.mail}</p>
                   {!acceptedIds.includes(invitation.id) ? (
                     <div className="flex gap-2">
                       <Button
                         isIconOnly
-                        className="ms-2 h-6 w-6"
+                        className="ms-2 rounded-lg"
                         color="success"
+                        variant="light"
                         aria-label="Accept"
                         onClick={() => handleAccept(invitation.id)}
                       >
-                        <Icon icon="mdi:check" width={16} height={16} />
+                        <Icon icon="mdi:check" width={18} height={18} />
                       </Button>
                       <Button
                         isIconOnly
-                        className="h-6 w-6"
+                        className="rounded-lg"
                         color="danger"
+                        variant="light"
                         aria-label="Decline"
                         onClick={() => handleDecline(invitation.id)}
                       >
-                        <Icon icon="mdi:close" width={16} height={16} />
+                        <Icon icon="mdi:close" width={18} height={18} />
                       </Button>
                     </div>
                   ) : (

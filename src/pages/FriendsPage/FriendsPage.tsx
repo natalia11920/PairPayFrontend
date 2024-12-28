@@ -71,7 +71,7 @@ const FriendsPage = () => {
       setNewFriendEmail("");
       onClose();
     } catch (error) {
-      console.error("Error sending friend request:", error);
+      toast.error("Error sending friend request");
       setRequestStatus("Failed to send friend request.");
     }
   };

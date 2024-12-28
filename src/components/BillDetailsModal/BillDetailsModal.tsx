@@ -9,21 +9,21 @@ import {
 } from "@nextui-org/react";
 import { useState, useEffect } from "react";
 import { BillDetails } from "../../types/Bill";
-import { getBillDetailsAPI } from "../../services/BillServices";
+import { getBillDetailsAPI, deleteBillAPI } from "../../services/BillServices";
 import { toast } from "react-toastify";
 
 interface BillDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   billId: number | null;
-  onUserAdded?: () => void;
+  onBillDeleted?: () => void;
 }
 
 export const BillDetailsModal = ({
   isOpen,
   onClose,
   billId,
-  onUserAdded,
+  onBillDeleted,
 }: BillDetailsModalProps) => {
   const [billDetails, setBillDetails] = useState<BillDetails | null>(null);
   const [loading, setLoading] = useState(false);
@@ -34,11 +34,27 @@ export const BillDetailsModal = ({
     setLoading(true);
     try {
       const details = await getBillDetailsAPI(billId);
-      console.log("test");
-      console.log(details);
       setBillDetails(details);
     } catch (error) {
       toast.error("Error fetching bill details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteBill = async () => {
+    if (!billId) return;
+
+    try {
+      setLoading(true);
+      await deleteBillAPI(billId);
+      toast.success("Bill deleted successfully!");
+      if (onBillDeleted) {
+        onBillDeleted();
+      }
+      onClose();
+    } catch (error) {
+      toast.error("Error deleting bill. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -81,55 +97,66 @@ export const BillDetailsModal = ({
 
                   <div>
                     <h3 className="font-semibold mb-2">Participants</h3>
-                    <div className="space-y-2">
-                      {billDetails.users.map((user) => (
-                        <div
-                          key={user.id}
-                          className="flex justify-between items-center p-3 rounded-lg"
-                        >
-                          <div>
-                            <p className="font-medium">{user.name}</p>
-                            <p className="text-sm text-gray-500">{user.mail}</p>
+                    <div className="max-h-48 overflow-y-auto pr-2">
+                      <div className="space-y-2">
+                        {billDetails.users.map((user) => (
+                          <div
+                            key={user.id}
+                            className="flex justify-between items-center p-3 rounded-lg"
+                          >
+                            <div>
+                              <p className="font-medium">{user.name}</p>
+                              <p className="text-sm text-gray-500">
+                                {user.mail}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
 
                   <div>
                     <h3 className="font-semibold mb-2">Expenses</h3>
-                    <div className="space-y-2">
-                      {Object.entries(billDetails.expenses).map(
-                        ([expenseId, expense]) => (
-                          <div
-                            key={`expense-${expenseId}`}
-                            className="p-3 rounded-lg"
-                          >
-                            <div className="flex justify-between items-start mb-2">
-                              <div>
-                                <p className="font-medium">{expense.name}</p>
+                    <div className="max-h-64 overflow-y-auto pr-2">
+                      <div className="space-y-2">
+                        {Object.entries(billDetails.expenses).map(
+                          ([expenseId, expense]) => (
+                            <div
+                              key={`expense-${expenseId}`}
+                              className="p-3 rounded-lg"
+                            >
+                              <div className="flex justify-between items-start mb-2">
+                                <div>
+                                  <p className="font-medium">{expense.name}</p>
+                                </div>
+                                <p className="font-semibold">
+                                  ${expense.price}
+                                </p>
                               </div>
-                              <p className="font-semibold">${expense.price}</p>
+                              <p className="text-sm text-gray-600">Payer</p>
+                              <div className="text-sm text-gray-600">
+                                <p className="font-medium">
+                                  {expense.payer.name}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  {expense.payer.mail}
+                                </p>
+                              </div>
                             </div>
-                            <p>Payer</p>
-                            <div className="text-sm text-gray-600">
-                              <p className="font-medium">
-                                {expense.payer.name}
-                              </p>
-                              <p className="text-sm text-gray-500">
-                                {expense.payer.mail}
-                              </p>
-                            </div>
-                          </div>
-                        )
-                      )}
+                          )
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
+              <Button color="danger" onPress={handleDeleteBill}>
+                Delete Bill
+              </Button>
+              <Button color="default" variant="light" onPress={onClose}>
                 Close
               </Button>
             </ModalFooter>
