@@ -11,6 +11,8 @@ import { useState, useEffect } from "react";
 import { BillDetails } from "../../types/Bill";
 import { getBillDetailsAPI, deleteBillAPI } from "../../services/BillServices";
 import { toast } from "react-toastify";
+import { InviteUsersToBillModal } from "../InviteUsersToBillModal/InviteUsersToBillModal";
+import { Icon } from "@iconify/react";
 
 interface BillDetailsModalProps {
   isOpen: boolean;
@@ -30,6 +32,7 @@ export const BillDetailsModal = ({
   const [billDetails, setBillDetails] = useState<BillDetails | null>(null);
   const [loading, setLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
 
   const fetchBillDetails = async () => {
     if (!billId) return;
@@ -76,6 +79,14 @@ export const BillDetailsModal = ({
     handleDeleteBill();
   };
 
+  const handleOpenInviteModal = () => {
+    setShowInviteModal(true);
+  };
+
+  const handleCloseInviteModal = () => {
+    setShowInviteModal(false);
+  };
+
   useEffect(() => {
     if (isOpen && billId) {
       fetchBillDetails();
@@ -115,7 +126,16 @@ export const BillDetailsModal = ({
                     </div>
 
                     <div>
-                      <h3 className="font-semibold mb-2">Participants</h3>
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-semibold mb-2">Participants</h3>
+                        <button
+                          className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-white"
+                          onClick={handleOpenInviteModal}
+                          aria-label="Invite Users"
+                        >
+                          <Icon icon="mdi:plus" width={18} height={18} />
+                        </button>
+                      </div>
                       <div className="max-h-48 overflow-y-auto pr-2">
                         <div className="space-y-2">
                           {billDetails.users.map((user) => (
@@ -192,6 +212,12 @@ export const BillDetailsModal = ({
           )}
         </ModalContent>
       </Modal>
+
+      <InviteUsersToBillModal
+        isOpen={showInviteModal}
+        onClose={handleCloseInviteModal}
+        billId={billId}
+      />
 
       <Modal isOpen={showConfirmation} onClose={handleCancelDelete}>
         <ModalContent>

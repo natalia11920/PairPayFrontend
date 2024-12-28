@@ -1,3 +1,4 @@
+import { select } from "@nextui-org/react";
 import { handleError } from "../helpers/ErrorHandler";
 import { BillCreate, BillDetails, BillDisplay } from "../types/Bill";
 import apiClient from "./ApiClient";
@@ -74,7 +75,21 @@ export const deleteBillAPI = async (billId: number) => {
   }
 };
 
-export const inviteToBIllAPI = async () => {};
+export const inviteUserToBIllAPI = async () => {};
+
+export const inviteUsersToBillAPI = async (
+  billId: number,
+  emails: string[]
+) => {
+  try {
+    const { data } = await apiClient.post(`/api/bills/${billId}/invite-users`, {
+      user_emails: emails,
+    });
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+};
 
 export const getBillDetailsAPI = async (
   billId: number

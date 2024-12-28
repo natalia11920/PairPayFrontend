@@ -26,6 +26,7 @@ import { toast } from "react-toastify";
 import { CreateBillModal } from "../../components/CreateBillModal/CreateBillModal";
 import { BillDetailsModal } from "../../components/BillDetailsModal/BillDetailsModal";
 import { useAuth } from "../../contexts/AuthContext";
+import { getFriendListAPI } from "../../services/UserServices";
 
 type Props = {};
 
@@ -96,6 +97,8 @@ const BillsPage = (props: Props) => {
     try {
       if (activeTab === "created") {
         const createdResponse = await getBillsCreatedAPI(createdPage, 4);
+        const response = await getFriendListAPI();
+        console.log(response);
         setCreatedBills(createdResponse.bills);
         setCreatedTotalItems(createdResponse.totalItems);
       } else {

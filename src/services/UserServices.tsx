@@ -27,6 +27,16 @@ export const getUserInfoByEmailAPI = async (email: string): Promise<Friend> => {
   }
 };
 
+export const getFriendListAPI = async () => {
+  try {
+    const { data } = await apiClient.get("/api/friends");
+    return data.friends;
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+};
+
 export const getUserInfoAPI = async (): Promise<{
   user: User[];
   id: number;
