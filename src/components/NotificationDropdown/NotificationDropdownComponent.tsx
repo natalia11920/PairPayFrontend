@@ -16,31 +16,42 @@ import {
   getPendingRequestsAPI,
 } from "../../services/FriendShipServices";
 import { toast } from "react-toastify";
+import { getBillInvitationsAPI } from "../../services/BillServices";
 
 const NotificationDropdown = () => {
-  const [invitations, setInvitations] = useState<
+  const [friendInvitations, setFriendInvitations] = useState<
     { id: number; mail: string; user_id: string }[]
   >([]);
+  const [billInvitations, setBillInvitations] = useState<any[]>([]);
   const [acceptedIds, setAcceptedIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchInvitations = async () => {
     setLoading(true);
     try {
-      const pendingRequests = await getPendingRequestsAPI();
-      setInvitations(
+      const [pendingRequests, billInvites] = await Promise.all([
+        getPendingRequestsAPI(),
+        getBillInvitationsAPI(),
+      ]);
+      setFriendInvitations(
         pendingRequests.map((request: any) => ({
           id: request.id,
           mail: request.mail,
           user_id: request.user_id,
         }))
       );
+
+      setBillInvitations(billInvites || []);
     } catch (error) {
       toast.error("Failed to fetch pending requests");
     } finally {
       setLoading(false);
     }
   };
+
+  const totalNotifications =
+    friendInvitations.filter((inv) => !acceptedIds.includes(inv.id)).length +
+    billInvitations.length;
 
   useEffect(() => {
     fetchInvitations();
@@ -64,12 +75,20 @@ const NotificationDropdown = () => {
   const handleDecline = async (id: number) => {
     try {
       await declineRequestAPI(id);
-      setInvitations((prev) =>
+      setFriendInvitations((prev) =>
         prev.filter((invitation) => invitation.id !== id)
       );
     } catch (error) {
       toast.error("Failed to decline request");
     }
+  };
+
+  const handleAcceptBillInvite = async (id: number) => {
+    // Implement the logic to accept the bill invitation
+  };
+
+  const handleDeclineBillInvite = async (id: number) => {
+    // Implement the logic to decline the bill invitation
   };
 
   return (
@@ -83,9 +102,7 @@ const NotificationDropdown = () => {
         }}
       >
         <Badge
-          content={
-            invitations.filter((inv) => !acceptedIds.includes(inv.id)).length
-          }
+          content={totalNotifications}
           shape="circle"
           color="secondary"
           className="border-none"
@@ -103,47 +120,98 @@ const NotificationDropdown = () => {
         </Badge>
 
         <PopoverContent className="w-80">
-          <p className="mb-2 font-bold">Friend Invitations</p>
           {loading ? (
             <div className="flex justify-center items-center h-20">
               <Spinner size="md" color="secondary" />
             </div>
-          ) : invitations.length === 0 ? (
-            <p>No invitations</p>
           ) : (
-            invitations.map((invitation) => (
-              <Card key={invitation.id} className="p-2 mb-2 mt-2 w-full">
-                <div className="flex items-center justify-between">
-                  <p>{invitation.mail}</p>
-                  {!acceptedIds.includes(invitation.id) ? (
-                    <div className="flex gap-2">
-                      <Button
-                        isIconOnly
-                        className="ms-2 rounded-lg"
-                        color="success"
-                        variant="light"
-                        aria-label="Accept"
-                        onClick={() => handleAccept(invitation.id)}
-                      >
-                        <Icon icon="mdi:check" width={18} height={18} />
-                      </Button>
-                      <Button
-                        isIconOnly
-                        className="rounded-lg"
-                        color="danger"
-                        variant="light"
-                        aria-label="Decline"
-                        onClick={() => handleDecline(invitation.id)}
-                      >
-                        <Icon icon="mdi:close" width={18} height={18} />
-                      </Button>
-                    </div>
-                  ) : (
-                    <p className="text-success">Accepted</p>
-                  )}
-                </div>
-              </Card>
-            ))
+            <>
+              {friendInvitations.length > 0 && (
+                <>
+                  <p className="mb-2 font-bold">Friend Invitations</p>
+                  {friendInvitations.map((invitation) => (
+                    <Card key={invitation.id} className="p-2 mb-2 mt-2 w-full">
+                      <div className="flex items-center justify-between">
+                        <p>{invitation.mail}</p>
+                        {!acceptedIds.includes(invitation.id) ? (
+                          <div className="flex gap-2">
+                            <Button
+                              isIconOnly
+                              className="ms-2 rounded-lg"
+                              color="success"
+                              variant="light"
+                              aria-label="Accept"
+                              onClick={() => handleAccept(invitation.id)}
+                            >
+                              <Icon icon="mdi:check" width={18} height={18} />
+                            </Button>
+                            <Button
+                              isIconOnly
+                              className="rounded-lg"
+                              color="danger"
+                              variant="light"
+                              aria-label="Decline"
+                              onClick={() => handleDecline(invitation.id)}
+                            >
+                              <Icon icon="mdi:close" width={18} height={18} />
+                            </Button>
+                          </div>
+                        ) : (
+                          <p className="text-success">Accepted</p>
+                        )}
+                      </div>
+                    </Card>
+                  ))}
+                </>
+              )}
+
+              {billInvitations.length > 0 && (
+                <>
+                  <p className="mb-2 font-bold mt-4">Bill Invitations</p>
+                  {billInvitations.map((invitation) => (
+                    <Card key={invitation.id} className="p-2 mb-2 mt-2 w-full">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">{invitation.bill_name}</p>
+                          <p className="text-sm text-gray-500">
+                            From: {invitation.from_user}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            isIconOnly
+                            className="ms-2 rounded-lg"
+                            color="success"
+                            variant="light"
+                            aria-label="Accept"
+                            onClick={() =>
+                              handleAcceptBillInvite(invitation.id)
+                            }
+                          >
+                            <Icon icon="mdi:check" width={18} height={18} />
+                          </Button>
+                          <Button
+                            isIconOnly
+                            className="rounded-lg"
+                            color="danger"
+                            variant="light"
+                            aria-label="Decline"
+                            onClick={() =>
+                              handleDeclineBillInvite(invitation.id)
+                            }
+                          >
+                            <Icon icon="mdi:close" width={18} height={18} />
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </>
+              )}
+
+              {friendInvitations.length === 0 &&
+                billInvitations.length === 0 && <p>No notifications</p>}
+            </>
           )}
         </PopoverContent>
       </Popover>

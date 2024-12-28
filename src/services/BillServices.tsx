@@ -91,6 +91,16 @@ export const inviteUsersToBillAPI = async (
   }
 };
 
+export const getBillInvitationsAPI = async () => {
+  try {
+    const { data } = await apiClient.get("api/invitations");
+    return data.invitations;
+  } catch (error) {
+    handleError(error);
+    throw error;
+  }
+};
+
 export const getBillDetailsAPI = async (
   billId: number
 ): Promise<BillDetails> => {
