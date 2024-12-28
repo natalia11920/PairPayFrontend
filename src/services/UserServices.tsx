@@ -29,15 +29,15 @@ export const getUserInfoAPI = async (
   }
 };
 
-export const deleteUser = async (): Promise<void> => {
+{/*export const deleteUser = async (UserData: Partial<User>): Promise<void> => {
   try {
     const delResp = await apiClient.delete("/api/user/del_user");
     console.log("User deleted successfully:", delResp.data);
   } catch (error) {
-    handleError(error);
+    console.error("Error deleting user:", error);
     throw error;
   }
-};
+};*/}
 
 export const updateUser = async (
   updatedUserData: Partial<User>
