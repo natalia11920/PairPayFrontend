@@ -25,10 +25,13 @@ import { PaginationComponent } from "../../components/Pagination/PaginationCompo
 import { toast } from "react-toastify";
 import { CreateBillModal } from "../../components/CreateBillModal/CreateBillModal";
 import { BillDetailsModal } from "../../components/BillDetailsModal/BillDetailsModal";
+import { useAuth } from "../../contexts/AuthContext";
 
 type Props = {};
 
 const BillsPage = (props: Props) => {
+  const { user } = useAuth();
+
   const [createdBills, setCreatedBills] = useState<BillDisplay[]>([]);
   const [participatedBills, setParticipatedBills] = useState<BillDisplay[]>([]);
   const [loading, setLoading] = useState(true);
@@ -238,30 +241,9 @@ const BillsPage = (props: Props) => {
         isOpen={!!selectedBillId}
         onClose={() => setSelectedBillId(null)}
         billId={selectedBillId}
+        userId={user?.id}
         onBillDeleted={fetchData}
       />
-
-      <Modal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-      >
-        <ModalContent>
-          <ModalHeader>Confirm Deletion</ModalHeader>
-          <ModalBody>Are you sure you want to delete this bill?</ModalBody>
-          <ModalFooter>
-            <Button
-              color="default"
-              variant="light"
-              onPress={() => setIsDeleteModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button color="danger" onPress={handleDeleteBill}>
-              Delete
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </div>
   );
 };

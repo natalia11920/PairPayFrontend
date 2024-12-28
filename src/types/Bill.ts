@@ -15,6 +15,7 @@ export type BillDetails = {
   label: string;
   total_sum: number;
   created_at: Date;
+  user_creator: User;
   users: User[];
   expenses: ExpenseDisplay[];
 };
