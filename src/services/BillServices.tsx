@@ -101,6 +101,28 @@ export const getBillInvitationsAPI = async () => {
   }
 };
 
+export const acceptBillInvitationAPI = async (invitationId: number) => {
+  try {
+    const { data } = await apiClient.post(
+      `/api/invitations/${invitationId}/accept`
+    );
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const declineBillInvitationAPI = async (invitationId: number) => {
+  try {
+    const { data } = await apiClient.post(
+      `/api/invitations/${invitationId}/decline`
+    );
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
 export const getBillDetailsAPI = async (
   billId: number
 ): Promise<BillDetails> => {

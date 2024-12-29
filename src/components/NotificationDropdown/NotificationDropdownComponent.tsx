@@ -16,7 +16,11 @@ import {
   getPendingRequestsAPI,
 } from "../../services/FriendShipServices";
 import { toast } from "react-toastify";
-import { getBillInvitationsAPI } from "../../services/BillServices";
+import {
+  acceptBillInvitationAPI,
+  declineBillInvitationAPI,
+  getBillInvitationsAPI,
+} from "../../services/BillServices";
 
 const NotificationDropdown = () => {
   const [friendInvitations, setFriendInvitations] = useState<
@@ -84,11 +88,128 @@ const NotificationDropdown = () => {
   };
 
   const handleAcceptBillInvite = async (id: number) => {
-    // Implement the logic to accept the bill invitation
+    try {
+      await acceptBillInvitationAPI(id);
+      setBillInvitations((prev) =>
+        prev.filter((invitation) => invitation.id !== id)
+      );
+    } catch (error) {
+      toast.error("Failed to accept bill invitation");
+    }
   };
 
   const handleDeclineBillInvite = async (id: number) => {
-    // Implement the logic to decline the bill invitation
+    try {
+      await declineBillInvitationAPI(id);
+      setBillInvitations((prev) =>
+        prev.filter((invitation) => invitation.id !== id)
+      );
+    } catch (error) {
+      toast.error("Failed to decline bill invitation");
+    }
+  };
+
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="flex justify-center items-center h-20">
+          <Spinner size="md" color="secondary" />
+        </div>
+      );
+    }
+
+    if (friendInvitations.length === 0 && billInvitations.length === 0) {
+      return <p>No notifications</p>;
+    }
+
+    return (
+      <>
+        {friendInvitations.length > 0 && (
+          <div key="friend-invitations">
+            <p className="mb-2 font-bold mt-4">Friend Invitations</p>
+            {friendInvitations.map((invitation) => (
+              <Card
+                key={`friend-${invitation.id}`}
+                className="p-2 mb-2 mt-2 w-full"
+              >
+                <div className="flex items-center justify-between">
+                  <p>{invitation.mail}</p>
+                  {!acceptedIds.includes(invitation.id) ? (
+                    <div className="flex gap-2">
+                      <Button
+                        isIconOnly
+                        className="ms-2 rounded-lg"
+                        color="success"
+                        variant="light"
+                        aria-label="Accept"
+                        onClick={() => handleAccept(invitation.id)}
+                      >
+                        <Icon icon="mdi:check" width={18} height={18} />
+                      </Button>
+                      <Button
+                        isIconOnly
+                        className="rounded-lg"
+                        color="danger"
+                        variant="light"
+                        aria-label="Decline"
+                        onClick={() => handleDecline(invitation.id)}
+                      >
+                        <Icon icon="mdi:close" width={18} height={18} />
+                      </Button>
+                    </div>
+                  ) : (
+                    <p className="text-success">Accepted</p>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {billInvitations.length > 0 && (
+          <div key="bill-invitations">
+            <p className="mb-2 font-bold">Bill Invitations</p>
+            {billInvitations.map((invitation) => (
+              <Card
+                key={`bill-${invitation.id}`}
+                className="p-2 mb-2 mt-2 w-full"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{invitation.bill_name}</p>
+                    <p className="text-sm text-gray-500">
+                      From: {invitation.email}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      isIconOnly
+                      className="ms-2 rounded-lg"
+                      color="success"
+                      variant="light"
+                      aria-label="Accept"
+                      onClick={() => handleAcceptBillInvite(invitation.id)}
+                    >
+                      <Icon icon="mdi:check" width={18} height={18} />
+                    </Button>
+                    <Button
+                      isIconOnly
+                      className="rounded-lg"
+                      color="danger"
+                      variant="light"
+                      aria-label="Decline"
+                      onClick={() => handleDeclineBillInvite(invitation.id)}
+                    >
+                      <Icon icon="mdi:close" width={18} height={18} />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </>
+    );
   };
 
   return (
@@ -119,101 +240,7 @@ const NotificationDropdown = () => {
           </PopoverTrigger>
         </Badge>
 
-        <PopoverContent className="w-80">
-          {loading ? (
-            <div className="flex justify-center items-center h-20">
-              <Spinner size="md" color="secondary" />
-            </div>
-          ) : (
-            <>
-              {friendInvitations.length > 0 && (
-                <>
-                  <p className="mb-2 font-bold">Friend Invitations</p>
-                  {friendInvitations.map((invitation) => (
-                    <Card key={invitation.id} className="p-2 mb-2 mt-2 w-full">
-                      <div className="flex items-center justify-between">
-                        <p>{invitation.mail}</p>
-                        {!acceptedIds.includes(invitation.id) ? (
-                          <div className="flex gap-2">
-                            <Button
-                              isIconOnly
-                              className="ms-2 rounded-lg"
-                              color="success"
-                              variant="light"
-                              aria-label="Accept"
-                              onClick={() => handleAccept(invitation.id)}
-                            >
-                              <Icon icon="mdi:check" width={18} height={18} />
-                            </Button>
-                            <Button
-                              isIconOnly
-                              className="rounded-lg"
-                              color="danger"
-                              variant="light"
-                              aria-label="Decline"
-                              onClick={() => handleDecline(invitation.id)}
-                            >
-                              <Icon icon="mdi:close" width={18} height={18} />
-                            </Button>
-                          </div>
-                        ) : (
-                          <p className="text-success">Accepted</p>
-                        )}
-                      </div>
-                    </Card>
-                  ))}
-                </>
-              )}
-
-              {billInvitations.length > 0 && (
-                <>
-                  <p className="mb-2 font-bold mt-4">Bill Invitations</p>
-                  {billInvitations.map((invitation) => (
-                    <Card key={invitation.id} className="p-2 mb-2 mt-2 w-full">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">{invitation.bill_name}</p>
-                          <p className="text-sm text-gray-500">
-                            From: {invitation.from_user}
-                          </p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            isIconOnly
-                            className="ms-2 rounded-lg"
-                            color="success"
-                            variant="light"
-                            aria-label="Accept"
-                            onClick={() =>
-                              handleAcceptBillInvite(invitation.id)
-                            }
-                          >
-                            <Icon icon="mdi:check" width={18} height={18} />
-                          </Button>
-                          <Button
-                            isIconOnly
-                            className="rounded-lg"
-                            color="danger"
-                            variant="light"
-                            aria-label="Decline"
-                            onClick={() =>
-                              handleDeclineBillInvite(invitation.id)
-                            }
-                          >
-                            <Icon icon="mdi:close" width={18} height={18} />
-                          </Button>
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
-                </>
-              )}
-
-              {friendInvitations.length === 0 &&
-                billInvitations.length === 0 && <p>No notifications</p>}
-            </>
-          )}
-        </PopoverContent>
+        <PopoverContent className="w-80">{renderContent()}</PopoverContent>
       </Popover>
     </div>
   );
