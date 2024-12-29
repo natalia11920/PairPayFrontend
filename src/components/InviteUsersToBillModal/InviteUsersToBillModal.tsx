@@ -22,6 +22,7 @@ interface InviteUsersToBillModalProps {
   onClose: () => void;
   billId: number | null;
   onSubmit: (billId: number | null, selectedUsers: string[]) => void;
+  initialSelectedUsers?: string[];
 }
 
 export const InviteUsersToBillModal = ({
@@ -29,11 +30,15 @@ export const InviteUsersToBillModal = ({
   onClose,
   billId,
   onSubmit,
+  initialSelectedUsers = [],
 }: InviteUsersToBillModalProps) => {
-  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
-  const arraySelectedUsers = Array.from(selectedUsers);
-
+  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(
+    new Set(initialSelectedUsers)
+  );
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+
+  const arraySelectedUsers = Array.from(selectedUsers);
 
   const fetchFriends = async () => {
     try {
@@ -46,8 +51,14 @@ export const InviteUsersToBillModal = ({
 
   useEffect(() => {
     fetchFriends();
-    console.log(selectedUsers);
   }, []);
+
+  useEffect(() => {
+    if (isOpen && !prevIsOpen) {
+      setSelectedUsers(new Set(initialSelectedUsers));
+    }
+    setPrevIsOpen(isOpen);
+  }, [isOpen, prevIsOpen, initialSelectedUsers]);
 
   const topContent = arraySelectedUsers.length ? (
     <ScrollShadow
@@ -71,7 +82,8 @@ export const InviteUsersToBillModal = ({
     if (billId && emails.length > 0) {
       try {
         const response = await inviteUsersToBillAPI(billId, emails);
-        toast.success("Invitations sent successfully!");
+        onSubmit(billId, arraySelectedUsers);
+        toast.success(response.message);
         onClose();
       } catch (error) {
         toast.error("Error sending invitations");
@@ -98,6 +110,7 @@ export const InviteUsersToBillModal = ({
                   label="Select Users"
                   selectionMode="multiple"
                   variant="flat"
+                  selectedKeys={selectedUsers}
                   topContent={topContent}
                   onSelectionChange={(keys) =>
                     setSelectedUsers(new Set(Array.from(keys) as string[]))

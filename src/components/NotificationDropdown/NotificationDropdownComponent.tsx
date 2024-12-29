@@ -27,7 +27,8 @@ const NotificationDropdown = () => {
     { id: number; mail: string; user_id: string }[]
   >([]);
   const [billInvitations, setBillInvitations] = useState<any[]>([]);
-  const [acceptedIds, setAcceptedIds] = useState<number[]>([]);
+  const [acceptedFriendIds, setAcceptedFriendIds] = useState<number[]>([]);
+  const [acceptedBillIds, setAcceptedBillIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchInvitations = async () => {
@@ -37,6 +38,7 @@ const NotificationDropdown = () => {
         getPendingRequestsAPI(),
         getBillInvitationsAPI(),
       ]);
+
       setFriendInvitations(
         pendingRequests.map((request: any) => ({
           id: request.id,
@@ -54,8 +56,11 @@ const NotificationDropdown = () => {
   };
 
   const totalNotifications =
-    friendInvitations.filter((inv) => !acceptedIds.includes(inv.id)).length +
-    billInvitations.length;
+    friendInvitations.filter((inv) => !acceptedFriendIds.includes(inv.id))
+      .length +
+    billInvitations.filter(
+      (inv) => !acceptedBillIds.includes(inv.invitation_id)
+    ).length;
 
   useEffect(() => {
     fetchInvitations();
@@ -67,16 +72,16 @@ const NotificationDropdown = () => {
     return () => clearInterval(pollInterval);
   }, []);
 
-  const handleAccept = async (id: number) => {
+  const handleAcceptFriend = async (id: number) => {
     try {
       await acceptRequestAPI(id);
-      setAcceptedIds((prev) => [...prev, id]);
+      setAcceptedFriendIds((prev) => [...prev, id]);
     } catch (error) {
       toast.error("Failed to accept request");
     }
   };
 
-  const handleDecline = async (id: number) => {
+  const handleDeclineFriend = async (id: number) => {
     try {
       await declineRequestAPI(id);
       setFriendInvitations((prev) =>
@@ -90,9 +95,7 @@ const NotificationDropdown = () => {
   const handleAcceptBillInvite = async (id: number) => {
     try {
       await acceptBillInvitationAPI(id);
-      setBillInvitations((prev) =>
-        prev.filter((invitation) => invitation.id !== id)
-      );
+      setAcceptedBillIds((prev) => [...prev, id]);
     } catch (error) {
       toast.error("Failed to accept bill invitation");
     }
@@ -102,7 +105,7 @@ const NotificationDropdown = () => {
     try {
       await declineBillInvitationAPI(id);
       setBillInvitations((prev) =>
-        prev.filter((invitation) => invitation.id !== id)
+        prev.filter((invitation) => invitation.invitation_id !== id)
       );
     } catch (error) {
       toast.error("Failed to decline bill invitation");
@@ -134,7 +137,7 @@ const NotificationDropdown = () => {
               >
                 <div className="flex items-center justify-between">
                   <p>{invitation.mail}</p>
-                  {!acceptedIds.includes(invitation.id) ? (
+                  {!acceptedFriendIds.includes(invitation.id) ? (
                     <div className="flex gap-2">
                       <Button
                         isIconOnly
@@ -142,7 +145,7 @@ const NotificationDropdown = () => {
                         color="success"
                         variant="light"
                         aria-label="Accept"
-                        onClick={() => handleAccept(invitation.id)}
+                        onClick={() => handleAcceptFriend(invitation.id)}
                       >
                         <Icon icon="mdi:check" width={18} height={18} />
                       </Button>
@@ -152,7 +155,7 @@ const NotificationDropdown = () => {
                         color="danger"
                         variant="light"
                         aria-label="Decline"
-                        onClick={() => handleDecline(invitation.id)}
+                        onClick={() => handleDeclineFriend(invitation.id)}
                       >
                         <Icon icon="mdi:close" width={18} height={18} />
                       </Button>
@@ -171,7 +174,7 @@ const NotificationDropdown = () => {
             <p className="mb-2 font-bold">Bill Invitations</p>
             {billInvitations.map((invitation) => (
               <Card
-                key={`bill-${invitation.id}`}
+                key={`bill-${invitation.invitation_id}`}
                 className="p-2 mb-2 mt-2 w-full"
               >
                 <div className="flex items-center justify-between">
@@ -181,28 +184,36 @@ const NotificationDropdown = () => {
                       From: {invitation.email}
                     </p>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      isIconOnly
-                      className="ms-2 rounded-lg"
-                      color="success"
-                      variant="light"
-                      aria-label="Accept"
-                      onClick={() => handleAcceptBillInvite(invitation.id)}
-                    >
-                      <Icon icon="mdi:check" width={18} height={18} />
-                    </Button>
-                    <Button
-                      isIconOnly
-                      className="rounded-lg"
-                      color="danger"
-                      variant="light"
-                      aria-label="Decline"
-                      onClick={() => handleDeclineBillInvite(invitation.id)}
-                    >
-                      <Icon icon="mdi:close" width={18} height={18} />
-                    </Button>
-                  </div>
+                  {!acceptedBillIds.includes(invitation.invitation_id) ? (
+                    <div className="flex gap-2">
+                      <Button
+                        isIconOnly
+                        className="ms-2 rounded-lg"
+                        color="success"
+                        variant="light"
+                        aria-label="Accept"
+                        onClick={() =>
+                          handleAcceptBillInvite(invitation.invitation_id)
+                        }
+                      >
+                        <Icon icon="mdi:check" width={18} height={18} />
+                      </Button>
+                      <Button
+                        isIconOnly
+                        className="rounded-lg"
+                        color="danger"
+                        variant="light"
+                        aria-label="Decline"
+                        onClick={() =>
+                          handleDeclineBillInvite(invitation.invitation_id)
+                        }
+                      >
+                        <Icon icon="mdi:close" width={18} height={18} />
+                      </Button>
+                    </div>
+                  ) : (
+                    <p className="text-success">Accepted</p>
+                  )}
                 </div>
               </Card>
             ))}

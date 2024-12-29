@@ -217,6 +217,7 @@ export const BillDetailsModal = ({
         isOpen={showInviteModal}
         onClose={handleCloseInviteModal}
         billId={billId}
+        onSubmit={() => {}}
       />
 
       <Modal isOpen={showConfirmation} onClose={handleCancelDelete}>
