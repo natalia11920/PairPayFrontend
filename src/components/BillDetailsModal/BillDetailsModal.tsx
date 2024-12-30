@@ -329,7 +329,13 @@ export const BillDetailsModal = ({
             </p>
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" onPress={handleDeleteBill}>
+            <Button
+              color="danger"
+              onPress={() => {
+                handleDeleteBill();
+                setShowConfirmation(false);
+              }}
+            >
               Yes, Delete
             </Button>
             <Button
