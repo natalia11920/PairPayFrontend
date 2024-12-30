@@ -135,3 +135,32 @@ export const getBillDetailsAPI = async (
     throw error;
   }
 };
+
+export const updateBillAPI = async (billId: number, bill: BillCreate) => {
+  try {
+    const { data } = await apiClient.put(`/api/bills/${billId}`, bill);
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const getFriendsNotInBillAPI = async (billId: number | undefined) => {
+  try {
+    const { data } = await apiClient.get(
+      `api/bills/${billId}/available-friends`
+    );
+    return data.friends;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const getBillParticipantsAPI = async (billId: number | undefined) => {
+  try {
+    const { data } = await apiClient.get(`/api/bills/${billId}/participants`);
+    return data.participants;
+  } catch (error) {
+    handleError;
+  }
+};

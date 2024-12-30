@@ -10,17 +10,20 @@ import {
   Avatar,
   Listbox,
   ListboxItem,
+  Spinner,
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { Friend } from "../../types/Friends";
-import { getFriendListAPI } from "../../services/UserServices";
 import { toast } from "react-toastify";
-import { inviteUsersToBillAPI } from "../../services/BillServices";
+import {
+  getFriendsNotInBillAPI,
+  inviteUsersToBillAPI,
+} from "../../services/BillServices";
 
 interface InviteUsersToBillModalProps {
   isOpen: boolean;
   onClose: () => void;
-  billId: number | null;
+  billId: number | undefined;
   onSubmit: (billId: number | null, selectedUsers: string[]) => void;
   initialSelectedUsers?: string[];
 }
@@ -32,6 +35,7 @@ export const InviteUsersToBillModal = ({
   onSubmit,
   initialSelectedUsers = [],
 }: InviteUsersToBillModalProps) => {
+  const [loading, setLoading] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(
     new Set(initialSelectedUsers)
   );
@@ -41,20 +45,20 @@ export const InviteUsersToBillModal = ({
   const arraySelectedUsers = Array.from(selectedUsers);
 
   const fetchFriends = async () => {
+    setLoading(true);
     try {
-      const friends = await getFriendListAPI();
+      const friends = await getFriendsNotInBillAPI(billId);
       setFriends(friends);
     } catch (error) {
       toast.error("Error fetching friends");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchFriends();
-  }, []);
-
-  useEffect(() => {
     if (isOpen && !prevIsOpen) {
+      fetchFriends();
       setSelectedUsers(new Set(initialSelectedUsers));
     }
     setPrevIsOpen(isOpen);
@@ -101,42 +105,47 @@ export const InviteUsersToBillModal = ({
             </ModalHeader>
             <ModalBody>
               <div className="flex flex-col items-center justify-center gap-4">
-                <Listbox
-                  classNames={{
-                    base: "max-w-xs",
-                    list: "max-h-[300px] overflow-y-auto",
-                  }}
-                  items={friends}
-                  label="Select Users"
-                  selectionMode="multiple"
-                  variant="flat"
-                  selectedKeys={selectedUsers}
-                  topContent={topContent}
-                  onSelectionChange={(keys) =>
-                    setSelectedUsers(new Set(Array.from(keys) as string[]))
-                  }
-                >
-                  {(item) => (
-                    <ListboxItem key={item.id} textValue={item.name}>
-                      <div className="flex gap-2 items-center">
-                        <Avatar
-                          alt={item.name}
-                          className="flex-shrink-0"
-                          size="sm"
-                          src={
-                            "https://d2u8k2ocievbld.cloudfront.net/memojis/male/1.png"
-                          }
-                        />
-                        <div className="flex flex-col">
-                          <span className="text-small">{item.name}</span>
-                          <span className="text-tiny text-default-400">
-                            {item.mail}
-                          </span>
+                {loading ? (
+                  <div className="flex justify-center items-center min-h-[300px]">
+                    <Spinner color="secondary" size="lg" />
+                  </div>
+                ) : (
+                  <Listbox
+                    classNames={{
+                      base: "max-w-xs",
+                      list: "max-h-[300px] overflow-y-auto",
+                    }}
+                    items={friends}
+                    label="Select Users"
+                    selectionMode="multiple"
+                    variant="flat"
+                    selectedKeys={selectedUsers}
+                    topContent={topContent}
+                    onSelectionChange={(keys) =>
+                      setSelectedUsers(new Set(Array.from(keys) as string[]))
+                    }
+                  >
+                    {(item) => (
+                      <ListboxItem key={item.id} textValue={item.name}>
+                        <div className="flex gap-2 items-center">
+                          <Avatar
+                            alt={item.name}
+                            className="flex-shrink-0"
+                            color="secondary"
+                            size="sm"
+                            icon={item.name.charAt(0)}
+                          />
+                          <div className="flex flex-col">
+                            <span className="text-small">{item.name}</span>
+                            <span className="text-tiny text-default-400">
+                              {item.mail}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </ListboxItem>
-                  )}
-                </Listbox>
+                      </ListboxItem>
+                    )}
+                  </Listbox>
+                )}
               </div>
             </ModalBody>
             <ModalFooter>

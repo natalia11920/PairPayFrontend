@@ -6,13 +6,19 @@ import {
   ModalFooter,
   Button,
   Spinner,
+  Input,
 } from "@nextui-org/react";
 import { useState, useEffect } from "react";
 import { BillDetails } from "../../types/Bill";
-import { getBillDetailsAPI, deleteBillAPI } from "../../services/BillServices";
+import {
+  getBillDetailsAPI,
+  deleteBillAPI,
+  updateBillAPI,
+} from "../../services/BillServices";
 import { toast } from "react-toastify";
 import { InviteUsersToBillModal } from "../InviteUsersToBillModal/InviteUsersToBillModal";
 import { Icon } from "@iconify/react";
+import BillParticiapntsModal from "../BillParticipantsModal/BillParticipantsModal";
 
 interface BillDetailsModalProps {
   isOpen: boolean;
@@ -30,9 +36,18 @@ export const BillDetailsModal = ({
   onBillDeleted,
 }: BillDetailsModalProps) => {
   const [billDetails, setBillDetails] = useState<BillDetails | null>(null);
+  const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(
+    null
+  );
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showParticiapntsModal, setShowParticiapntsModal] = useState(false);
+  const [editedDetails, setEditedDetails] = useState({
+    name: "",
+    label: "",
+  });
 
   const fetchBillDetails = async () => {
     if (!billId) return;
@@ -41,6 +56,10 @@ export const BillDetailsModal = ({
     try {
       const details = await getBillDetailsAPI(billId);
       setBillDetails(details);
+      setEditedDetails({
+        name: details.name,
+        label: details.label,
+      });
     } catch (error) {
       toast.error("Error fetching bill details");
     } finally {
@@ -60,42 +79,38 @@ export const BillDetailsModal = ({
       }
       onClose();
     } catch (error) {
-      toast.error("Error deleting bill. Please try again.");
+      toast.error("Error deleting bill");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleConfirmDelete = () => {
-    setShowConfirmation(true);
-  };
+  const handleSaveChanges = async () => {
+    if (!billId) return;
 
-  const handleCancelDelete = () => {
-    setShowConfirmation(false);
-  };
-
-  const handleFinalDelete = () => {
-    setShowConfirmation(false);
-    handleDeleteBill();
-  };
-
-  const handleOpenInviteModal = () => {
-    setShowInviteModal(true);
-  };
-
-  const handleCloseInviteModal = () => {
-    setShowInviteModal(false);
+    try {
+      setLoading(true);
+      await updateBillAPI(billId, editedDetails);
+      toast.success("Changes saved successfully!");
+      fetchBillDetails();
+      setEditMode(false);
+    } catch (error) {
+      toast.error("Error saving changes");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     if (isOpen && billId) {
       fetchBillDetails();
+      setEditMode(false);
     }
   }, [isOpen, billId]);
 
   return (
     <>
-      <Modal size="2xl" isOpen={isOpen} onClose={onClose}>
+      <Modal size="3xl" isOpen={isOpen} onClose={onClose}>
         <ModalContent>
           {loading ? (
             <div className="flex justify-center items-center p-8">
@@ -103,10 +118,41 @@ export const BillDetailsModal = ({
             </div>
           ) : (
             <>
-              <ModalHeader>
-                <div>
-                  <h2 className="text-xl font-bold">{billDetails?.name}</h2>
-                  <p className="text-sm text-gray-500">{billDetails?.label}</p>
+              <ModalHeader className="flex flex-col gap-1">
+                <div className="w-full">
+                  {editMode ? (
+                    <div className="space-y-2">
+                      <Input
+                        label="Name"
+                        value={editedDetails.name}
+                        onChange={(e) =>
+                          setEditedDetails((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }))
+                        }
+                        variant="bordered"
+                      />
+                      <Input
+                        label="Label"
+                        value={editedDetails.label}
+                        onChange={(e) =>
+                          setEditedDetails((prev) => ({
+                            ...prev,
+                            label: e.target.value,
+                          }))
+                        }
+                        variant="bordered"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <h2 className="text-xl font-bold">{billDetails?.name}</h2>
+                      <p className="text-sm text-gray-500">
+                        {billDetails?.label}
+                      </p>
+                    </>
+                  )}
                 </div>
               </ModalHeader>
               <ModalBody>
@@ -116,7 +162,7 @@ export const BillDetailsModal = ({
                       <h3 className="font-semibold mb-2">
                         General Information
                       </h3>
-                      <div className="p-4 rounded-lg">
+                      <div className="p-2">
                         <p>Total Amount: ${billDetails.total_sum}</p>
                         <p>
                           Created:{" "}
@@ -127,27 +173,43 @@ export const BillDetailsModal = ({
 
                     <div>
                       <div className="flex items-center justify-between">
-                        <h3 className="font-semibold mb-2">Participants</h3>
+                        <div className="flex items-center">
+                          <h3 className="font-semibold mb-2">Participants</h3>
+                          <Button
+                            className="text-sm text-gray-500 mb-2"
+                            variant="light"
+                            onClick={() => setShowParticiapntsModal(true)}
+                          >
+                            Show all
+                          </Button>
+                        </div>
                         <button
                           className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-white"
-                          onClick={handleOpenInviteModal}
+                          onClick={() => setShowInviteModal(true)}
                           aria-label="Invite Users"
                         >
                           <Icon icon="mdi:plus" width={18} height={18} />
                         </button>
                       </div>
-                      <div className="max-h-48 overflow-y-auto pr-2">
-                        <div className="space-y-2">
+                      <div className="max-h-32 overflow-y-auto">
+                        <div className="space-y-2 p-2">
                           {billDetails.users.map((user) => (
                             <div
                               key={user.id}
-                              className="flex justify-between items-center p-3 rounded-lg"
+                              className="flex justify-between items-center p-3"
                             >
-                              <div>
-                                <p className="font-medium">{user.name}</p>
-                                <p className="text-sm text-gray-500">
-                                  {user.mail}
-                                </p>
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white">
+                                  {user.name.charAt(0)}
+                                </div>
+                                <div>
+                                  <p className="font-medium">
+                                    {user.name} {user.surname}
+                                  </p>
+                                  <p className="text-sm text-gray-500">
+                                    {user.mail}
+                                  </p>
+                                </div>
                               </div>
                             </div>
                           ))}
@@ -157,32 +219,39 @@ export const BillDetailsModal = ({
 
                     <div>
                       <h3 className="font-semibold mb-2">Expenses</h3>
-                      <div className="max-h-64 overflow-y-auto pr-2">
-                        <div className="space-y-2">
+                      <div className="max-h-48 overflow-y-auto">
+                        <div className="space-y-4 p-2">
                           {Object.entries(billDetails.expenses).map(
                             ([expenseId, expense]) => (
-                              <div
-                                key={`expense-${expenseId}`}
-                                className="p-3 rounded-lg"
-                              >
-                                <div className="flex justify-between items-start mb-2">
-                                  <div>
-                                    <p className="font-medium">
+                              <div key={`expense-${expenseId}`} className="p-2">
+                                <div className="flex justify-between items-start mb-3">
+                                  <div className="flex items-center gap-6 ">
+                                    <h4 className="font-semibold text-lg">
                                       {expense.name}
-                                    </p>
+                                    </h4>
+                                    <span className="text-2xl font-bold text-secondary">
+                                      ${expense.price}
+                                    </span>
                                   </div>
-                                  <p className="font-semibold">
-                                    ${expense.price}
-                                  </p>
                                 </div>
-                                <p className="text-sm text-gray-600">Payer</p>
-                                <div className="text-sm text-gray-600">
-                                  <p className="font-medium">
-                                    {expense.payer.name}
+                                <div className="p-1">
+                                  <p className="text-sm font-medium text-gray-700 mb-1">
+                                    Paid by
                                   </p>
-                                  <p className="text-sm text-gray-500">
-                                    {expense.payer.mail}
-                                  </p>
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white">
+                                      {expense.payer.name.charAt(0)}
+                                    </div>
+                                    <div>
+                                      <p className="font-medium">
+                                        {expense.payer.name}{" "}
+                                        {expense.payer.surname}
+                                      </p>
+                                      <p className="text-sm text-gray-500">
+                                        {expense.payer.mail}
+                                      </p>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             )
@@ -193,20 +262,41 @@ export const BillDetailsModal = ({
                   </div>
                 )}
               </ModalBody>
-              <ModalFooter>
-                {billDetails?.user_creator.id === userId && (
-                  <Button
-                    color="danger"
-                    variant="light"
-                    onPress={handleConfirmDelete}
-                    disabled={loading}
-                  >
-                    {loading ? <Spinner size="sm" /> : "Delete Bill"}
-                  </Button>
-                )}
-                <Button color="default" variant="light" onPress={onClose}>
-                  Close
-                </Button>
+              <ModalFooter className="flex justify-between">
+                <div>
+                  {billDetails?.user_creator.id === userId && (
+                    <>
+                      <Button
+                        color="default"
+                        variant="light"
+                        onPress={() => setEditMode(!editMode)}
+                      >
+                        {editMode ? "Cancel Edit" : "Edit"}
+                      </Button>
+                      {editMode && (
+                        <Button
+                          color="secondary"
+                          onPress={handleSaveChanges}
+                          className="ml-2"
+                        >
+                          Save Changes
+                        </Button>
+                      )}
+                    </>
+                  )}
+                </div>
+                <div>
+                  {billDetails?.user_creator.id === userId && (
+                    <Button
+                      color="danger"
+                      variant="light"
+                      onPress={() => setShowConfirmation(true)}
+                      disabled={loading}
+                    >
+                      Delete Bill
+                    </Button>
+                  )}
+                </div>
               </ModalFooter>
             </>
           )}
@@ -215,12 +305,21 @@ export const BillDetailsModal = ({
 
       <InviteUsersToBillModal
         isOpen={showInviteModal}
-        onClose={handleCloseInviteModal}
-        billId={billId}
+        onClose={() => setShowInviteModal(false)}
+        billId={billDetails?.id}
         onSubmit={() => {}}
       />
 
-      <Modal isOpen={showConfirmation} onClose={handleCancelDelete}>
+      <BillParticiapntsModal
+        isOpen={showParticiapntsModal}
+        onClose={() => setShowParticiapntsModal(false)}
+        billId={billDetails?.id}
+      />
+
+      <Modal
+        isOpen={showConfirmation}
+        onClose={() => setShowConfirmation(false)}
+      >
         <ModalContent>
           <ModalHeader>Confirm Deletion</ModalHeader>
           <ModalBody>
@@ -230,13 +329,13 @@ export const BillDetailsModal = ({
             </p>
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" onPress={handleFinalDelete}>
+            <Button color="danger" onPress={handleDeleteBill}>
               Yes, Delete
             </Button>
             <Button
               color="default"
               variant="light"
-              onPress={handleCancelDelete}
+              onPress={() => setShowConfirmation(false)}
             >
               Cancel
             </Button>
@@ -246,3 +345,5 @@ export const BillDetailsModal = ({
     </>
   );
 };
+
+export default BillDetailsModal;

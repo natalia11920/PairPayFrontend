@@ -10,6 +10,7 @@ import {
   DropdownMenu,
   Avatar,
   Button,
+  AvatarIcon,
 } from "@nextui-org/react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
@@ -72,9 +73,8 @@ const NavbarComponent = (props: Props) => {
                     as="button"
                     className="transition-transform"
                     color="secondary"
-                    name="Jason Hughes"
                     size="sm"
-                    src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                    icon={user?.name.charAt(0)}
                   />
                 </DropdownTrigger>
                 <DropdownMenu
