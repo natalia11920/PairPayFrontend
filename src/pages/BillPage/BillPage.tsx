@@ -147,7 +147,7 @@ const BillsPage = (props: Props) => {
               </CardHeader>
               <CardBody>
                 <p>Amount: ${bill.total_sum}</p>
-                <p>Created: {new Date(bill.created_at).toLocaleString()}</p>
+                <p>Created: {new Date(bill.created_at).toLocaleDateString()}</p>
               </CardBody>
             </Card>
           ))

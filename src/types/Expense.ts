@@ -6,3 +6,11 @@ export type ExpenseDisplay = {
   price: number;
   payer: User;
 };
+
+export type ExpenseCreate = {
+  name: string;
+  price: number;
+  currency: string;
+  payer: number;
+  participants: number[];
+};

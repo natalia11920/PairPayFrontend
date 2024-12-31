@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import { InviteUsersToBillModal } from "../InviteUsersToBillModal/InviteUsersToBillModal";
 import { Icon } from "@iconify/react";
 import BillParticiapntsModal from "../BillParticipantsModal/BillParticipantsModal";
+import AddExpenseModal from "../CreateExpenseModal/CreateExpenseModal";
 
 interface BillDetailsModalProps {
   isOpen: boolean;
@@ -48,6 +49,8 @@ export const BillDetailsModal = ({
     name: "",
     label: "",
   });
+
+  const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
 
   const fetchBillDetails = async () => {
     if (!billId) return;
@@ -218,7 +221,16 @@ export const BillDetailsModal = ({
                     </div>
 
                     <div>
-                      <h3 className="font-semibold mb-2">Expenses</h3>
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-semibold mb-2">Expenses</h3>
+                        <button
+                          className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-white"
+                          onClick={() => setShowAddExpenseModal(true)}
+                          aria-label="Add Expense"
+                        >
+                          <Icon icon="mdi:plus" width={18} height={18} />
+                        </button>
+                      </div>
                       <div className="max-h-48 overflow-y-auto">
                         <div className="space-y-4 p-2">
                           {Object.entries(billDetails.expenses).map(
@@ -314,6 +326,18 @@ export const BillDetailsModal = ({
         isOpen={showParticiapntsModal}
         onClose={() => setShowParticiapntsModal(false)}
         billId={billDetails?.id}
+      />
+
+      <AddExpenseModal
+        isOpen={showAddExpenseModal}
+        onClose={() => setShowAddExpenseModal(false)}
+        billId={billDetails?.id}
+        billParticipants={billDetails?.users || []}
+        billCreator={billDetails?.user_creator}
+        onExpenseAdded={() => {
+          fetchBillDetails();
+          setShowAddExpenseModal(false);
+        }}
       />
 
       <Modal
