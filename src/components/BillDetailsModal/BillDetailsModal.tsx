@@ -7,6 +7,8 @@ import {
   Button,
   Spinner,
   Input,
+  CardBody,
+  Card,
 } from "@nextui-org/react";
 import { useState, useEffect } from "react";
 import { BillDetails } from "../../types/Bill";
@@ -20,6 +22,7 @@ import { InviteUsersToBillModal } from "../InviteUsersToBillModal/InviteUsersToB
 import { Icon } from "@iconify/react";
 import BillParticiapntsModal from "../BillParticipantsModal/BillParticipantsModal";
 import AddExpenseModal from "../CreateExpenseModal/CreateExpenseModal";
+import ExpenseDetailsModal from "../ExpenseDetailsModal/ExpenseDetailsModal";
 
 interface BillDetailsModalProps {
   isOpen: boolean;
@@ -40,9 +43,9 @@ export const BillDetailsModal = ({
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(
-    null
-  );
+  const [selectedExpenseId, setSelectedExpenseId] = useState<
+    number | undefined
+  >(undefined);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showParticiapntsModal, setShowParticiapntsModal] = useState(false);
   const [editedDetails, setEditedDetails] = useState({
@@ -102,6 +105,10 @@ export const BillDetailsModal = ({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleExpenseClick = (expenseId: number) => {
+    setSelectedExpenseId(expenseId);
   };
 
   useEffect(() => {
@@ -235,37 +242,45 @@ export const BillDetailsModal = ({
                         <div className="space-y-4 p-2">
                           {Object.entries(billDetails.expenses).map(
                             ([expenseId, expense]) => (
-                              <div key={`expense-${expenseId}`} className="p-2">
-                                <div className="flex justify-between items-start mb-3">
-                                  <div className="flex items-center gap-6 ">
-                                    <h4 className="font-semibold text-lg">
-                                      {expense.name}
-                                    </h4>
-                                    <span className="text-2xl font-bold text-secondary">
-                                      ${expense.price}
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="p-1">
-                                  <p className="text-sm font-medium text-gray-700 mb-1">
-                                    Paid by
-                                  </p>
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white">
-                                      {expense.payer.name.charAt(0)}
+                              <Card
+                                key={expense.id}
+                                isPressable
+                                onPress={() => handleExpenseClick(expense.id)}
+                                className="w-full"
+                              >
+                                <CardBody className="p-4">
+                                  <div className="flex flex-col gap-4">
+                                    <div className="flex justify-between items-center">
+                                      <h4 className="font-semibold text-lg">
+                                        {expense.name}
+                                      </h4>
+                                      <span className="text-2xl font-bold text-secondary">
+                                        ${expense.price}
+                                      </span>
                                     </div>
+
                                     <div>
-                                      <p className="font-medium">
-                                        {expense.payer.name}{" "}
-                                        {expense.payer.surname}
+                                      <p className="text-sm font-medium text-gray-700 mb-2">
+                                        Paid by
                                       </p>
-                                      <p className="text-sm text-gray-500">
-                                        {expense.payer.mail}
-                                      </p>
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white">
+                                          {expense.payer.name.charAt(0)}
+                                        </div>
+                                        <div>
+                                          <p className="font-medium">
+                                            {expense.payer.name}{" "}
+                                            {expense.payer.surname}
+                                          </p>
+                                          <p className="text-sm text-gray-500">
+                                            {expense.payer.mail}
+                                          </p>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </div>
+                                </CardBody>
+                              </Card>
                             )
                           )}
                         </div>
@@ -338,6 +353,15 @@ export const BillDetailsModal = ({
           fetchBillDetails();
           setShowAddExpenseModal(false);
         }}
+      />
+
+      <ExpenseDetailsModal
+        isOpen={!!selectedExpenseId}
+        onClose={() => setSelectedExpenseId(undefined)}
+        expenseId={selectedExpenseId}
+        billId={billDetails?.id}
+        userId={userId}
+        onExpenseDeleted={fetchBillDetails}
       />
 
       <Modal

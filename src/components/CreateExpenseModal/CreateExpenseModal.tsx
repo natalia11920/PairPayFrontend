@@ -89,6 +89,7 @@ const AddExpenseModal = ({
     { label: "USD", value: "USD" },
     { label: "EUR", value: "EUR" },
     { label: "GBP", value: "GBP" },
+    { label: "PLN", value: "PLN" },
   ];
 
   return (

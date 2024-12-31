@@ -1,9 +1,10 @@
 import { SVGProps } from "react";
 import { JSX } from "react/jsx-runtime";
 
-export const ChevronIcon = (props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) => (
+export const ChevronIcon = (
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+) => (
   <svg
-    aria-hidden="true"
     fill="none"
     focusable="false"
     height="1em"

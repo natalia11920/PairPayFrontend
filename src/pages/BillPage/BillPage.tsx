@@ -24,8 +24,8 @@ import {
 import { PaginationComponent } from "../../components/Pagination/PaginationComponent";
 import { toast } from "react-toastify";
 import { CreateBillModal } from "../../components/CreateBillModal/CreateBillModal";
-import { BillDetailsModal } from "../../components/BillDetailsModal/BillDetailsModal";
 import { useAuth } from "../../contexts/AuthContext";
+import BillDetailsModal from "../../components/BillDetailsModal/BillDetailsModal";
 
 type Props = {};
 

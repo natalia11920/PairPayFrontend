@@ -1,9 +1,10 @@
 import { SVGProps } from "react";
 import { JSX } from "react/jsx-runtime";
 
-export const MoonIcon = (props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) => (
+export const MoonIcon = (
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+) => (
   <svg
-    aria-hidden="true"
     focusable="false"
     height="1em"
     role="presentation"

@@ -4,7 +4,6 @@ import React from "react";
 export const SearchIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
-      aria-hidden="true"
       fill="none"
       focusable="false"
       height="1em"

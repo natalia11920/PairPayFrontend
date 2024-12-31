@@ -5,7 +5,6 @@ export const SunIcon = (
   props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
 ) => (
   <svg
-    aria-hidden="true"
     focusable="false"
     height="1em"
     role="presentation"
