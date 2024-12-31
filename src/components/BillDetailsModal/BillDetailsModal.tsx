@@ -23,6 +23,7 @@ import { Icon } from "@iconify/react";
 import BillParticiapntsModal from "../BillParticipantsModal/BillParticipantsModal";
 import AddExpenseModal from "../CreateExpenseModal/CreateExpenseModal";
 import ExpenseDetailsModal from "../ExpenseDetailsModal/ExpenseDetailsModal";
+import { ConfirmationModal } from "../ModalHelpers/ConfirmationModal";
 
 interface BillDetailsModalProps {
   isOpen: boolean;
@@ -364,38 +365,17 @@ export const BillDetailsModal = ({
         onExpenseDeleted={fetchBillDetails}
       />
 
-      <Modal
+      <ConfirmationModal
         isOpen={showConfirmation}
         onClose={() => setShowConfirmation(false)}
-      >
-        <ModalContent>
-          <ModalHeader>Confirm Deletion</ModalHeader>
-          <ModalBody>
-            <p>
-              Are you sure you want to delete this bill? This action cannot be
-              undone.
-            </p>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              color="danger"
-              onPress={() => {
-                handleDeleteBill();
-                setShowConfirmation(false);
-              }}
-            >
-              Yes, Delete
-            </Button>
-            <Button
-              color="default"
-              variant="light"
-              onPress={() => setShowConfirmation(false)}
-            >
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+        onConfirm={() => {
+          handleDeleteBill();
+          setShowConfirmation(false);
+        }}
+        message={
+          "Are you sure you want to delete this bill? This action cannot be undone."
+        }
+      />
     </>
   );
 };
