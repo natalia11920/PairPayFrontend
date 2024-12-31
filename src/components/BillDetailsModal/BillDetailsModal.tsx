@@ -159,7 +159,7 @@ export const BillDetailsModal = ({
                   ) : (
                     <>
                       <h2 className="text-xl font-bold">{billDetails?.name}</h2>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-300">
                         {billDetails?.label}
                       </p>
                     </>
@@ -187,7 +187,7 @@ export const BillDetailsModal = ({
                         <div className="flex items-center">
                           <h3 className="font-semibold mb-2">Participants</h3>
                           <Button
-                            className="text-sm text-gray-500 mb-2"
+                            className="text-sm text-gray-300 mb-2"
                             variant="light"
                             onClick={() => setShowParticiapntsModal(true)}
                           >
@@ -217,7 +217,7 @@ export const BillDetailsModal = ({
                                   <p className="font-medium">
                                     {user.name} {user.surname}
                                   </p>
-                                  <p className="text-sm text-gray-500">
+                                  <p className="text-sm text-gray-300">
                                     {user.mail}
                                   </p>
                                 </div>
@@ -261,7 +261,7 @@ export const BillDetailsModal = ({
                                     </div>
 
                                     <div>
-                                      <p className="text-sm font-medium text-gray-700 mb-2">
+                                      <p className="text-sm font-medium text-gray-300 mb-2">
                                         Paid by
                                       </p>
                                       <div className="flex items-center gap-3">
@@ -273,7 +273,7 @@ export const BillDetailsModal = ({
                                             {expense.payer.name}{" "}
                                             {expense.payer.surname}
                                           </p>
-                                          <p className="text-sm text-gray-500">
+                                          <p className="text-sm text-gray-300">
                                             {expense.payer.mail}
                                           </p>
                                         </div>

@@ -131,7 +131,7 @@ export const ExpenseDetailsModal = ({
                             {expenseDetails.payer.name}{" "}
                             {expenseDetails.payer.surname}
                           </span>
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm text-gray-300">
                             ({expenseDetails.payer.mail})
                           </span>
                         </div>
@@ -156,7 +156,7 @@ export const ExpenseDetailsModal = ({
                                     {participant.user.name}{" "}
                                     {participant.user.surname}
                                   </p>
-                                  <p className="text-sm text-gray-500">
+                                  <p className="text-sm text-gray-300">
                                     {participant.user.mail}
                                   </p>
                                 </div>

@@ -180,7 +180,7 @@ const NotificationDropdown = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">{invitation.bill_name}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-300">
                       From: {invitation.email}
                     </p>
                   </div>

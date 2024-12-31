@@ -72,7 +72,7 @@ export const BillParticiapntsModal = ({
                               <p className="font-medium">
                                 {user.name} {user.surname}
                               </p>
-                              <p className="text-sm text-gray-500">
+                              <p className="text-sm text-gray-300">
                                 {user.mail}
                               </p>
                             </div>

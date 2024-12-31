@@ -11,9 +11,9 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@iconify/react": "^5.0.2",
-    "@nextui-org/react": "^2.4.8",
+    "@nextui-org/react": "^2.6.10",
     "axios": "^1.7.8",
-    "framer-motion": "^11.11.17",
+    "framer-motion": "^11.15.0",
     "next-themes": "^0.4.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -22,6 +22,7 @@
     "react-toastify": "^10.0.6",
     "recharts": "^2.13.3",
     "typescript": "^5.7.2",
+    "vite-plugin-compression": "^0.5.1",
     "yup": "^1.4.0"
   },
   "devDependencies": {
@@ -37,6 +38,7 @@
     "globals": "^15.11.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
+    "terser": "^5.37.0",
     "ts-node": "^10.9.2",
     "vite": "^5.4.11"
   }

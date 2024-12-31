@@ -93,7 +93,7 @@ const FriendsPage = () => {
 
   const getDebtStatusColor = (debtInfo: Friend["debt_info"]) => {
     const netDebt = calculateNetDebt(debtInfo);
-    if (netDebt === 0) return "text-gray-600";
+    if (netDebt === 0) return "text-gray-300";
     return netDebt > 0 ? "text-green-600" : "text-red-600";
   };
 
@@ -156,7 +156,7 @@ const FriendsPage = () => {
                   </Card>
                 ))
               ) : (
-                <p className="text-center text-gray-600">No friends found.</p>
+                <p className="text-center text-gray-300">No friends found.</p>
               )}
             </div>
           )}

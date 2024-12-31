@@ -202,7 +202,7 @@ const UserPage = (props: Props) => {
               )}
             </CardBody>
             <CardFooter>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-300">
                 Manage your account settings here.
               </p>
             </CardFooter>
@@ -278,7 +278,7 @@ const UserPage = (props: Props) => {
               )}
             </CardBody>
             <CardFooter>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-300">
                 Manage users and assign admin roles.
               </p>
             </CardFooter>
