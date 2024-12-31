@@ -240,7 +240,7 @@ export const BillDetailsModal = ({
                             >
                               <div className="flex items-center gap-2">
                                 <Avatar
-                                  icon={`${user.name.charAt(0)}`}
+                                  icon={`${user.name}`}
                                   size="sm"
                                   color="secondary"
                                 />

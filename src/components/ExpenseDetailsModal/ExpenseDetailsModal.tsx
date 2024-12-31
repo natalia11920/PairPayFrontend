@@ -130,7 +130,7 @@ export const ExpenseDetailsModal = ({
                           <p className="text-sm text-gray-400">Paid by</p>
                           <div className="flex items-center gap-2 mt-1">
                             <Avatar
-                              icon={`${expenseDetails.payer.name.charAt(0)}`}
+                              icon={`${expenseDetails.payer.name}`}
                               size="sm"
                               color="secondary"
                             />

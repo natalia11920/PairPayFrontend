@@ -66,7 +66,7 @@ export const BillParticiapntsModal = ({
                       >
                         <div className="flex items-center gap-3">
                           <Avatar
-                            icon={`${user.name.charAt(0)}`}
+                            icon={`${user.name}`}
                             color="secondary"
                             size="md"
                           />

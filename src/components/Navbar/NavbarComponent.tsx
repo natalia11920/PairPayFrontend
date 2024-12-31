@@ -66,7 +66,7 @@ const NavbarComponent = () => {
                     className="transition-transform"
                     color="secondary"
                     size="sm"
-                    icon={`${user?.name.charAt(0)}`}
+                    icon={`${user?.name}`}
                   />
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Profile Actions" variant="flat">
