@@ -96,12 +96,12 @@ export const InviteUsersToBillModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
       <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader>
-              <h2 className="text-xl font-bold">Add Users to Bill</h2>
+              <h2 className="text-2xl font-bold">Add Users to Bill</h2>
             </ModalHeader>
             <ModalBody>
               <div className="flex flex-col items-center justify-center gap-4">
@@ -110,46 +110,58 @@ export const InviteUsersToBillModal = ({
                     <Spinner color="secondary" size="lg" />
                   </div>
                 ) : (
-                  <Listbox
-                    classNames={{
-                      base: "max-w-xs",
-                      list: "max-h-[300px] overflow-y-auto",
-                    }}
-                    items={friends}
-                    label="Select Users"
-                    selectionMode="multiple"
-                    variant="flat"
-                    selectedKeys={selectedUsers}
-                    topContent={topContent}
-                    onSelectionChange={(keys) =>
-                      setSelectedUsers(new Set(Array.from(keys) as string[]))
-                    }
-                  >
-                    {(item) => (
-                      <ListboxItem key={item.id} textValue={item.name}>
-                        <div className="flex gap-2 items-center">
-                          <Avatar
-                            alt={item.name}
-                            className="flex-shrink-0"
-                            color="secondary"
-                            size="sm"
-                            icon={item.name.charAt(0)}
-                          />
-                          <div className="flex flex-col">
-                            <span className="text-small">{item.name}</span>
-                            <span className="text-tiny text-default-400">
-                              {item.mail}
-                            </span>
-                          </div>
-                        </div>
-                      </ListboxItem>
+                  <>
+                    {topContent && (
+                      <ScrollShadow
+                        hideScrollBar
+                        className="w-full flex py-2 px-2 gap-1 bg-content2 rounded-lg"
+                        orientation="horizontal"
+                      >
+                        {topContent}
+                      </ScrollShadow>
                     )}
-                  </Listbox>
+                    <Listbox
+                      classNames={{
+                        base: "max-w-full w-full",
+                        list: "max-h-[300px] overflow-y-auto",
+                      }}
+                      items={friends}
+                      label="Select Users"
+                      selectionMode="multiple"
+                      variant="flat"
+                      selectedKeys={selectedUsers}
+                      onSelectionChange={(keys) =>
+                        setSelectedUsers(new Set(Array.from(keys) as string[]))
+                      }
+                    >
+                      {(item) => (
+                        <ListboxItem key={item.id} textValue={item.name}>
+                          <div className="flex gap-2 items-center">
+                            <Avatar
+                              alt={item.name}
+                              className="flex-shrink-0"
+                              color="secondary"
+                              size="sm"
+                              name={`${item.name} ${item.surname}`}
+                            />
+                            <div className="flex flex-col">
+                              <span className="text-small">
+                                {item.name} {item.surname}
+                              </span>
+                              <span className="text-tiny text-default-400">
+                                {item.mail}
+                              </span>
+                            </div>
+                          </div>
+                        </ListboxItem>
+                      )}
+                    </Listbox>
+                  </>
                 )}
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
+              <Button color="danger" variant="flat" onPress={onClose}>
                 Cancel
               </Button>
               <Button color="secondary" onPress={handleInvite}>

@@ -10,61 +10,53 @@ import {
   DropdownMenu,
   Avatar,
   Button,
-  AvatarIcon,
 } from "@nextui-org/react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { ThemeSwitcher } from "../ThemeSwitcher/ThemeSwitcher";
 import NotificationDropdown from "../NotificationDropdown/NotificationDropdownComponent";
+import { Icon } from "@iconify/react";
 
-interface Props {}
-
-const NavbarComponent = (props: Props) => {
+const NavbarComponent = () => {
   const { isLoggedIn, logout, user } = useAuth();
   const navigate = useNavigate();
 
   return (
-    <Navbar isBordered isBlurred className="bg-content1">
+    <Navbar
+      isBordered
+      isBlurred
+      className="bg-background/60 backdrop-blur-md backdrop-saturate-150 border-b border-divider"
+    >
       <NavbarBrand>
-        <NextUILink className="font-bold text-inherit" as={Link} to="/home">
-          PairPay
+        <NextUILink
+          className="font-bold text-inherit flex items-center gap-2"
+          as={Link}
+          to="/home"
+        >
+          <Icon
+            icon="mdi:cash-multiple"
+            className="text-secondary"
+            width={24}
+            height={24}
+          />
+          <span className="text-secondary">PairPay</span>
         </NextUILink>
       </NavbarBrand>
-      {/* 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <NextUILink color="foreground">Features</NextUILink>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <NextUILink aria-current="page" color="primary">
-            Customers
-          </NextUILink>
-        </NavbarItem>
-        <NavbarItem>
-          <NextUILink color="foreground">Integrations</NextUILink>
-        </NavbarItem>
-      </NavbarContent> */}
 
       <NavbarContent justify="end">
-        <div className="flex">
+        <NavbarItem className="flex items-center gap-4">
           <ThemeSwitcher />
-        </div>
-        {!isLoggedIn() ? (
-          <>
-            <NavbarItem>
-              <NextUILink color="secondary" as={Link} to="/login">
+          {!isLoggedIn() ? (
+            <>
+              <NextUILink color="foreground" as={Link} to="/login">
                 Login
               </NextUILink>
-            </NavbarItem>
-            <NavbarItem>
               <Button as={Link} to="/register" color="secondary" variant="flat">
                 Sign Up
               </Button>
-            </NavbarItem>
-          </>
-        ) : (
-          <NavbarItem>
-            <div className="flex items-center gap-4">
+            </>
+          ) : (
+            <>
               <NotificationDropdown />
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
@@ -74,52 +66,52 @@ const NavbarComponent = (props: Props) => {
                     className="transition-transform"
                     color="secondary"
                     size="sm"
-                    icon={user?.name.charAt(0)}
+                    icon={`${user?.name.charAt(0)}`}
                   />
                 </DropdownTrigger>
-                <DropdownMenu
-                  aria-label="Profile Actions"
-                  variant="flat"
-                  className="bg-content1"
-                >
+                <DropdownMenu aria-label="Profile Actions" variant="flat">
                   <DropdownItem
                     key="profile"
                     className="h-14 gap-2"
-                    textValue="My Bills"
+                    textValue="Signed in as"
                   >
                     <p className="font-semibold">Signed in as</p>
                     <p className="font-semibold">{user?.mail}</p>
                   </DropdownItem>
                   <DropdownItem
                     key="settings"
-                    textValue="My Settings"
-                    onClick={() => navigate("settings")}
+                    startContent={<Icon icon="mdi:cog" />}
+                    onPress={() => navigate("settings")}
                   >
                     Settings
                   </DropdownItem>
-                  <DropdownItem key="bills" onClick={() => navigate("bills")}>
+                  <DropdownItem
+                    key="bills"
+                    startContent={<Icon icon="mdi:file-document-multiple" />}
+                    onPress={() => navigate("bills")}
+                  >
                     Bills
                   </DropdownItem>
                   <DropdownItem
                     key="friends"
-                    textValue="My Friends"
-                    onClick={() => navigate("friends")}
+                    startContent={<Icon icon="mdi:account-group" />}
+                    onPress={() => navigate("friends")}
                   >
                     Friends
                   </DropdownItem>
-                  {/* <DropdownItem key="system">System</DropdownItem>
-                <DropdownItem key="configurations">Configurations</DropdownItem>
-                <DropdownItem key="help_and_feedback">
-                  Help & Feedback
-                </DropdownItem> */}
-                  <DropdownItem key="logout" color="danger" onClick={logout}>
+                  <DropdownItem
+                    key="logout"
+                    color="danger"
+                    startContent={<Icon icon="mdi:logout" />}
+                    onPress={logout}
+                  >
                     Log Out
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-            </div>
-          </NavbarItem>
-        )}
+            </>
+          )}
+        </NavbarItem>
       </NavbarContent>
     </Navbar>
   );

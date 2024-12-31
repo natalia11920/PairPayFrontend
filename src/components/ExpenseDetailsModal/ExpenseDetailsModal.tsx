@@ -6,6 +6,7 @@ import {
   ModalFooter,
   Button,
   Spinner,
+  Avatar,
 } from "@nextui-org/react";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
@@ -109,67 +110,79 @@ export const ExpenseDetailsModal = ({
           ) : (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <div className="w-full">
-                  <h2 className="text-xl font-bold">{expenseDetails?.name}</h2>
-                </div>
+                <h2 className="text-2xl font-bold">{expenseDetails?.name}</h2>
               </ModalHeader>
               <ModalBody>
                 {expenseDetails && (
                   <div className="space-y-6">
-                    <div>
-                      <h3 className="font-semibold mb-2">
+                    <div className="bg-content2 rounded-lg p-4">
+                      <h3 className="font-semibold mb-4 text-lg">
                         General Information
                       </h3>
-                      <div className="p-4 rounded-lg space-y-2">
-                        <p>
-                          Total Amount: {expenseDetails.price}{" "}
-                          {expenseDetails.currency}
-                        </p>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Paid by:</span>
-                          <span>
-                            {expenseDetails.payer.name}{" "}
-                            {expenseDetails.payer.surname}
-                          </span>
-                          <span className="text-sm text-gray-300">
-                            ({expenseDetails.payer.mail})
-                          </span>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-gray-400">Total Amount</p>
+                          <p className="text-2xl font-bold text-secondary">
+                            {expenseDetails.price} {expenseDetails.currency}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-400">Paid by</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Avatar
+                              icon={`${expenseDetails.payer.name.charAt(0)}`}
+                              size="sm"
+                              color="secondary"
+                            />
+                            <div>
+                              <p className="font-medium">
+                                {expenseDetails.payer.name}{" "}
+                                {expenseDetails.payer.surname}
+                              </p>
+                              <p className="text-xs text-gray-400">
+                                {expenseDetails.payer.mail}
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <div>
-                      <h3 className="font-semibold mb-2">Participants</h3>
-                      <div className="space-y-2">
-                        {expenseDetails.participants.map(
-                          (participant, index) => (
-                            <div
-                              key={participant.user.id}
-                              className="flex justify-between items-center p-4 rounded-lg"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white">
-                                  {participant.user.name.charAt(0)}
-                                </div>
-                                <div>
-                                  <p className="font-medium">
-                                    {participant.user.name}{" "}
-                                    {participant.user.surname}
-                                  </p>
-                                  <p className="text-sm text-gray-300">
-                                    {participant.user.mail}
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="text-right">
+                    <div className="bg-content2 rounded-lg p-4">
+                      <h3 className="font-semibold mb-4 text-lg">
+                        Participants
+                      </h3>
+                      <div className="space-y-3">
+                        {expenseDetails.participants.map((participant) => (
+                          <div
+                            key={participant.user.id}
+                            className="flex justify-between items-center p-3 bg-content3 rounded-lg"
+                          >
+                            <div className="flex items-center gap-3">
+                              <Avatar
+                                name={`${participant.user.name} ${participant.user.surname}`}
+                                size="sm"
+                                color="secondary"
+                                icon={`${participant.user.name.charAt(0)}`}
+                              />
+                              <div>
                                 <p className="font-medium">
-                                  Owes: {participant.amount_owed}{" "}
-                                  {expenseDetails.currency}
+                                  {participant.user.name}{" "}
+                                  {participant.user.surname}
+                                </p>
+                                <p className="text-xs text-gray-400">
+                                  {participant.user.mail}
                                 </p>
                               </div>
                             </div>
-                          )
-                        )}
+                            <div className="text-right">
+                              <p className="font-medium">
+                                Owes: {participant.amount_owed}{" "}
+                                {expenseDetails.currency}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -178,7 +191,7 @@ export const ExpenseDetailsModal = ({
               <ModalFooter>
                 <Button
                   color="danger"
-                  variant="light"
+                  variant="flat"
                   onPress={() => setShowConfirmation(true)}
                   disabled={loading}
                 >

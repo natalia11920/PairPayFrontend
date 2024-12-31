@@ -4,6 +4,7 @@ import {
   ModalHeader,
   ModalBody,
   Spinner,
+  Avatar,
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { Friend } from "../../types/Friends";
@@ -43,46 +44,44 @@ export const BillParticiapntsModal = ({
   }, [isOpen]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader>
-              <h2 className="text-xl font-bold">Bill Participants</h2>
+            <ModalHeader className="flex flex-col gap-1">
+              <h2 className="text-2xl font-bold">Bill Participants</h2>
             </ModalHeader>
             <ModalBody>
-              <div>
-                {loading ? (
-                  <div className="flex justify-center items-center min-h-[300px]">
-                    <Spinner color="secondary" size="lg" />
-                  </div>
-                ) : (
-                  <div className="max-h-96 overflow-y-auto">
-                    <div className="space-y-2 p-2">
-                      {friends.map((user) => (
-                        <div
-                          key={user.id}
-                          className="flex justify-between items-center p-3"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white">
-                              {user.name.charAt(0)}
-                            </div>
-                            <div>
-                              <p className="font-medium">
-                                {user.name} {user.surname}
-                              </p>
-                              <p className="text-sm text-gray-300">
-                                {user.mail}
-                              </p>
-                            </div>
+              {loading ? (
+                <div className="flex justify-center items-center min-h-[300px]">
+                  <Spinner color="secondary" size="lg" />
+                </div>
+              ) : (
+                <div className="max-h-96 overflow-y-auto">
+                  <div className="space-y-2">
+                    {friends.map((user) => (
+                      <div
+                        key={user.id}
+                        className="flex justify-between items-center p-3 bg-content2 rounded-lg"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Avatar
+                            icon={`${user.name.charAt(0)}`}
+                            color="secondary"
+                            size="md"
+                          />
+                          <div>
+                            <p className="font-medium">
+                              {user.name} {user.surname}
+                            </p>
+                            <p className="text-sm text-gray-400">{user.mail}</p>
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </ModalBody>
           </>
         )}

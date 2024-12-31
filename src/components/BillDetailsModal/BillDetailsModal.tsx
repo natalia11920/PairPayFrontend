@@ -9,6 +9,7 @@ import {
   Input,
   CardBody,
   Card,
+  Avatar,
 } from "@nextui-org/react";
 import { useState, useEffect } from "react";
 import { BillDetails } from "../../types/Bill";
@@ -130,9 +131,9 @@ export const BillDetailsModal = ({
           ) : (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <div className="w-full">
+                <div className="w-full flex justify-between items-center">
                   {editMode ? (
-                    <div className="space-y-2">
+                    <div className="space-y-2 w-full">
                       <Input
                         label="Name"
                         value={editedDetails.name}
@@ -143,6 +144,7 @@ export const BillDetailsModal = ({
                           }))
                         }
                         variant="bordered"
+                        className="w-full"
                       />
                       <Input
                         label="Label"
@@ -154,70 +156,99 @@ export const BillDetailsModal = ({
                           }))
                         }
                         variant="bordered"
+                        className="w-full"
                       />
                     </div>
                   ) : (
-                    <>
-                      <h2 className="text-xl font-bold">{billDetails?.name}</h2>
-                      <p className="text-sm text-gray-300">
+                    <div>
+                      <h2 className="text-2xl font-bold">
+                        {billDetails?.name}
+                      </h2>
+                      <p className="text-sm text-gray-400">
                         {billDetails?.label}
                       </p>
-                    </>
+                    </div>
+                  )}
+                  {billDetails?.user_creator.id === userId && (
+                    <Button
+                      isIconOnly
+                      color="default"
+                      variant="light"
+                      onPress={() => setEditMode(!editMode)}
+                    >
+                      <Icon
+                        icon={editMode ? "mdi:close" : "mdi:pencil"}
+                        width={20}
+                      />
+                    </Button>
                   )}
                 </div>
               </ModalHeader>
               <ModalBody>
                 {billDetails && (
                   <div className="space-y-6">
-                    <div>
-                      <h3 className="font-semibold mb-2">
+                    <div className="bg-content2 rounded-lg p-4">
+                      <h3 className="font-semibold mb-2 text-lg">
                         General Information
                       </h3>
-                      <div className="p-2">
-                        <p>Total Amount: ${billDetails.total_sum}</p>
-                        <p>
-                          Created:{" "}
-                          {new Date(billDetails.created_at).toLocaleString()}
-                        </p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-gray-400">Total Amount</p>
+                          <p className="text-xl font-bold text-secondary">
+                            ${billDetails.total_sum}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-400">Created</p>
+                          <p>
+                            {new Date(billDetails.created_at).toLocaleString()}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <h3 className="font-semibold mb-2">Participants</h3>
+                    <div className="bg-content2 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-lg">Participants</h3>
+                        <div className="flex items-center gap-2">
                           <Button
-                            className="text-sm text-gray-300 mb-2"
-                            variant="light"
-                            onClick={() => setShowParticiapntsModal(true)}
+                            size="sm"
+                            variant="flat"
+                            color="secondary"
+                            onPress={() => setShowParticiapntsModal(true)}
                           >
                             Show all
                           </Button>
+                          <Button
+                            isIconOnly
+                            color="secondary"
+                            variant="flat"
+                            size="sm"
+                            onPress={() => setShowInviteModal(true)}
+                            aria-label="Invite Users"
+                          >
+                            <Icon icon="mdi:plus" width={18} height={18} />
+                          </Button>
                         </div>
-                        <button
-                          className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-white"
-                          onClick={() => setShowInviteModal(true)}
-                          aria-label="Invite Users"
-                        >
-                          <Icon icon="mdi:plus" width={18} height={18} />
-                        </button>
                       </div>
                       <div className="max-h-32 overflow-y-auto">
-                        <div className="space-y-2 p-2">
+                        <div className="space-y-2">
                           {billDetails.users.map((user) => (
                             <div
                               key={user.id}
-                              className="flex justify-between items-center p-3"
+                              className="flex justify-between items-center p-2 rounded-md bg-content3"
                             >
                               <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white">
-                                  {user.name.charAt(0)}
-                                </div>
+                                <Avatar
+                                  icon={`${user.name.charAt(0)}`}
+                                  size="sm"
+                                  color="secondary"
+                                />
                                 <div>
                                   <p className="font-medium">
                                     {user.name} {user.surname}
                                   </p>
-                                  <p className="text-sm text-gray-300">
+                                  <p className="text-xs text-gray-400">
                                     {user.mail}
                                   </p>
                                 </div>
@@ -228,19 +259,22 @@ export const BillDetailsModal = ({
                       </div>
                     </div>
 
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-semibold mb-2">Expenses</h3>
-                        <button
-                          className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-white"
-                          onClick={() => setShowAddExpenseModal(true)}
+                    <div className="bg-content2 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-lg">Expenses</h3>
+                        <Button
+                          isIconOnly
+                          color="secondary"
+                          variant="flat"
+                          size="sm"
+                          onPress={() => setShowAddExpenseModal(true)}
                           aria-label="Add Expense"
                         >
                           <Icon icon="mdi:plus" width={18} height={18} />
-                        </button>
+                        </Button>
                       </div>
                       <div className="max-h-48 overflow-y-auto">
-                        <div className="space-y-4 p-2">
+                        <div className="space-y-4">
                           {Object.entries(billDetails.expenses).map(
                             ([expenseId, expense]) => (
                               <Card
@@ -250,35 +284,18 @@ export const BillDetailsModal = ({
                                 className="w-full"
                               >
                                 <CardBody className="p-4">
-                                  <div className="flex flex-col gap-4">
-                                    <div className="flex justify-between items-center">
+                                  <div className="flex justify-between items-center">
+                                    <div>
                                       <h4 className="font-semibold text-lg">
                                         {expense.name}
                                       </h4>
-                                      <span className="text-2xl font-bold text-secondary">
-                                        ${expense.price}
-                                      </span>
-                                    </div>
-
-                                    <div>
-                                      <p className="text-sm font-medium text-gray-300 mb-2">
-                                        Paid by
+                                      <p className="text-sm text-gray-400">
+                                        Paid by: {expense.payer.name}
                                       </p>
-                                      <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white">
-                                          {expense.payer.name.charAt(0)}
-                                        </div>
-                                        <div>
-                                          <p className="font-medium">
-                                            {expense.payer.name}{" "}
-                                            {expense.payer.surname}
-                                          </p>
-                                          <p className="text-sm text-gray-300">
-                                            {expense.payer.mail}
-                                          </p>
-                                        </div>
-                                      </div>
                                     </div>
+                                    <span className="text-2xl font-bold text-secondary">
+                                      ${expense.price}
+                                    </span>
                                   </div>
                                 </CardBody>
                               </Card>
@@ -292,32 +309,21 @@ export const BillDetailsModal = ({
               </ModalBody>
               <ModalFooter className="flex justify-between">
                 <div>
-                  {billDetails?.user_creator.id === userId && (
-                    <>
-                      <Button
-                        color="default"
-                        variant="light"
-                        onPress={() => setEditMode(!editMode)}
-                      >
-                        {editMode ? "Cancel Edit" : "Edit"}
-                      </Button>
-                      {editMode && (
-                        <Button
-                          color="secondary"
-                          onPress={handleSaveChanges}
-                          className="ml-2"
-                        >
-                          Save Changes
-                        </Button>
-                      )}
-                    </>
+                  {billDetails?.user_creator.id === userId && editMode && (
+                    <Button
+                      color="secondary"
+                      onPress={handleSaveChanges}
+                      className="mr-2"
+                    >
+                      Save Changes
+                    </Button>
                   )}
                 </div>
                 <div>
                   {billDetails?.user_creator.id === userId && (
                     <Button
                       color="danger"
-                      variant="light"
+                      variant="flat"
                       onPress={() => setShowConfirmation(true)}
                       disabled={loading}
                     >

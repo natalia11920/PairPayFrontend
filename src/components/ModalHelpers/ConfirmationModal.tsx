@@ -20,17 +20,19 @@ export const ConfirmationModal = ({
   onConfirm,
   message,
 }: ConfirmationModalProps) => (
-  <Modal isOpen={isOpen} onClose={onClose}>
+  <Modal isOpen={isOpen} onClose={onClose} size="sm">
     <ModalContent>
-      <ModalHeader>Confirm Action</ModalHeader>
+      <ModalHeader>
+        <h3 className="text-xl font-bold">Confirm Action</h3>
+      </ModalHeader>
       <ModalBody>
-        <p>{message}</p>
+        <p className="text-gray-600">{message}</p>
       </ModalBody>
       <ModalFooter>
         <Button color="danger" onPress={onConfirm}>
           Yes, Delete
         </Button>
-        <Button color="default" variant="light" onPress={onClose}>
+        <Button color="default" variant="flat" onPress={onClose}>
           Cancel
         </Button>
       </ModalFooter>

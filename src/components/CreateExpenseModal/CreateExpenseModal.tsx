@@ -9,6 +9,7 @@ import {
   Select,
   SelectItem,
   Checkbox,
+  Avatar,
 } from "@nextui-org/react";
 import { toast } from "react-toastify";
 import { User } from "../../types/User";
@@ -95,9 +96,11 @@ const AddExpenseModal = ({
   return (
     <Modal size="2xl" isOpen={isOpen} onClose={onClose}>
       <ModalContent>
-        <ModalHeader>Add New Expense</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1">
+          <h2 className="text-2xl font-bold">Add New Expense</h2>
+        </ModalHeader>
         <ModalBody>
-          <div className="space-y-4">
+          <div className="space-y-6">
             <Input
               label="Expense Name"
               value={formData.name}
@@ -145,6 +148,7 @@ const AddExpenseModal = ({
                 ))}
               </Select>
             </div>
+
             <Select
               label="Paid By"
               selectedKeys={formData.payer ? [formData.payer.toString()] : []}
@@ -170,13 +174,14 @@ const AddExpenseModal = ({
                 </SelectItem>
               ))}
             </Select>
+
             <div>
               <p className="text-sm font-medium mb-2">Split Between</p>
-              <div className="space-y-2 max-h-48 overflow-y-auto p-2">
+              <div className="space-y-2 max-h-48 overflow-y-auto p-2 bg-content2 rounded-lg">
                 {participants.map((user) => (
                   <Checkbox
-                    color="secondary"
                     key={user?.id}
+                    color="secondary"
                     isSelected={
                       user ? formData.participants.includes(user.id) : false
                     }
@@ -191,7 +196,16 @@ const AddExpenseModal = ({
                       }
                     }}
                   >
-                    {user?.name} {user?.surname}
+                    <div className="flex items-center gap-2">
+                      <Avatar
+                        icon={`${user?.name.charAt(0)}`}
+                        size="sm"
+                        color="secondary"
+                      />
+                      <span>
+                        {user?.name} {user?.surname}
+                      </span>
+                    </div>
                   </Checkbox>
                 ))}
               </div>
@@ -199,7 +213,7 @@ const AddExpenseModal = ({
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button color="danger" variant="light" onPress={onClose}>
+          <Button color="danger" variant="flat" onPress={onClose}>
             Cancel
           </Button>
           <Button color="secondary" onPress={handleSubmit} isLoading={loading}>
