@@ -17,6 +17,7 @@ import {
   getBillDetailsAPI,
   deleteBillAPI,
   updateBillAPI,
+  deleteBillParticipantAPI,
 } from "../../services/BillServices";
 import { toast } from "react-toastify";
 import { InviteUsersToBillModal } from "../InviteUsersToBillModal/InviteUsersToBillModal";
@@ -111,6 +112,13 @@ export const BillDetailsModal = ({
 
   const handleExpenseClick = (expenseId: number) => {
     setSelectedExpenseId(expenseId);
+  };
+
+  const handleRemoveParticipant = async (participantId: number) => {
+    if (!billId) return;
+
+    await deleteBillParticipantAPI(billId, participantId);
+    await fetchBillDetails();
   };
 
   useEffect(() => {
@@ -208,7 +216,7 @@ export const BillDetailsModal = ({
                     </div>
 
                     <div className="bg-content2 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold text-lg">Participants</h3>
                         <div className="flex items-center gap-2">
                           <Button
@@ -232,20 +240,20 @@ export const BillDetailsModal = ({
                         </div>
                       </div>
                       <div className="max-h-32 overflow-y-auto">
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                           {billDetails.users.map((user) => (
                             <div
                               key={user.id}
-                              className="flex justify-between items-center p-2 rounded-md bg-content3"
+                              className="flex justify-between items-center p-3 rounded-md bg-content3 hover:bg-content4 transition-colors"
                             >
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-3">
                                 <Avatar
-                                  icon={`${user.name}`}
+                                  name={`${user.name} ${user.surname}`}
                                   size="sm"
                                   color="secondary"
                                 />
                                 <div>
-                                  <p className="font-medium">
+                                  <p className="font-medium text-sm">
                                     {user.name} {user.surname}
                                   </p>
                                   <p className="text-xs text-gray-400">
@@ -253,6 +261,23 @@ export const BillDetailsModal = ({
                                   </p>
                                 </div>
                               </div>
+                              {billDetails.user_creator.id === userId && (
+                                <Button
+                                  isIconOnly
+                                  color="danger"
+                                  variant="flat"
+                                  size="sm"
+                                  onPress={() =>
+                                    handleRemoveParticipant(user.id)
+                                  }
+                                >
+                                  <Icon
+                                    icon="mdi:delete"
+                                    width={18}
+                                    height={18}
+                                  />
+                                </Button>
+                              )}
                             </div>
                           ))}
                         </div>

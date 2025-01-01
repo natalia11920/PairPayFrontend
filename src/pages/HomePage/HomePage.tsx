@@ -8,6 +8,7 @@ import {
   Button,
   Avatar,
   Divider,
+  Spinner,
 } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import { useAuth } from "../../contexts/AuthContext";
@@ -16,6 +17,7 @@ import { toast } from "react-toastify";
 import { getFriendsAPI } from "../../services/FriendShipServices";
 import { Friend } from "../../types/Friends";
 import { BillDisplay } from "../../types/Bill";
+import { getDebtBalancesAPI } from "../../services/DebtServices";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -28,7 +30,9 @@ export default function HomePage() {
     setLoading(true);
     try {
       const friendsData = await getFriendsAPI();
+      const totalBalanceData = await getDebtBalancesAPI();
       setFriends(friendsData);
+      setTotalBalance(totalBalanceData);
     } catch (error) {
       toast.error("Error fetching friends or emails:");
     } finally {
@@ -38,9 +42,6 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchFriends();
-
-    // mocked balance state => implement on backed later
-    setTotalBalance(Math.random() * 200 - 100);
   }, []);
 
   return (
@@ -63,16 +64,24 @@ export default function HomePage() {
             <p className="text-md font-semibold">Total Balance</p>
           </CardHeader>
           <CardBody>
-            <p
-              className={`text-2xl font-bold ${
-                totalBalance >= 0 ? "text-success" : "text-danger"
-              }`}
-            >
-              ${Math.abs(totalBalance).toFixed(2)}
-            </p>
-            <p className="text-sm text-gray-500">
-              {totalBalance >= 0 ? "You're owed" : "You owe"}
-            </p>
+            {loading ? (
+              <div className="flex justify-center items-center h-48">
+                <Spinner size="lg" color="secondary" />
+              </div>
+            ) : (
+              <div>
+                <p
+                  className={`text-2xl font-bold ${
+                    totalBalance >= 0 ? "text-success" : "text-danger"
+                  }`}
+                >
+                  ${Math.abs(totalBalance).toFixed(2)}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {totalBalance >= 0 ? "You're owed" : "You owe"}
+                </p>
+              </div>
+            )}
           </CardBody>
         </Card>
 
@@ -87,16 +96,27 @@ export default function HomePage() {
             <p className="text-md font-semibold">Recent Bills</p>
           </CardHeader>
           <CardBody>
-            <ul className="space-y-2">
-              {recentBills.map((bill) => (
-                <li key={bill.id} className="flex justify-between items-center">
-                  <span>{bill.name}</span>
-                  <span className="font-semibold">
-                    ${bill.total_sum.toFixed(2)}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {loading ? (
+              <div className="flex justify-center items-center h-48">
+                <Spinner size="lg" color="secondary" />
+              </div>
+            ) : (
+              <div>
+                <ul className="space-y-2">
+                  {recentBills.map((bill) => (
+                    <li
+                      key={bill.id}
+                      className="flex justify-between items-center"
+                    >
+                      <span>{bill.name}</span>
+                      <span className="font-semibold">
+                        ${bill.total_sum.toFixed(2)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </CardBody>
         </Card>
 
@@ -111,24 +131,30 @@ export default function HomePage() {
             <p className="text-md font-semibold">Friends</p>
           </CardHeader>
           <CardBody>
-            <div className="flex flex-wrap gap-2">
-              {friends.map((friend) => (
-                <Avatar
-                  key={friend.id}
-                  name={friend.name}
-                  color="secondary"
-                  size="sm"
-                />
-              ))}
-              <Button
-                isIconOnly
-                variant="flat"
-                className="text-default-900 bg-default-100"
-                aria-label="Add friend"
-              >
-                <Icon icon="mdi:plus" width={24} height={24} />
-              </Button>
-            </div>
+            {loading ? (
+              <div className="flex justify-center items-center h-48">
+                <Spinner size="lg" color="secondary" />
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {friends.map((friend) => (
+                  <Avatar
+                    key={friend.id}
+                    name={friend.name}
+                    color="secondary"
+                    size="sm"
+                  />
+                ))}
+                <Button
+                  isIconOnly
+                  variant="flat"
+                  className="text-default-900 bg-default-100"
+                  aria-label="Add friend"
+                >
+                  <Icon icon="mdi:plus" width={24} height={24} />
+                </Button>
+              </div>
+            )}
           </CardBody>
         </Card>
       </div>

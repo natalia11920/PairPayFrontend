@@ -158,7 +158,7 @@ const FriendsPage = () => {
                     <CardBody className="flex flex-row justify-between items-center p-4">
                       <div className="flex items-center gap-3">
                         <Avatar
-                          icon={`${friend.name.charAt(0)}`}
+                          icon={`${friend.name}`}
                           size="md"
                           color="secondary"
                         />
@@ -212,7 +212,7 @@ const FriendsPage = () => {
               <ModalBody>
                 <div className="flex flex-col gap-4">
                   <Input
-                    type="email"
+                    // type="email"
                     label="Friend's Email"
                     placeholder="Enter friend's email"
                     value={newFriendEmail}
