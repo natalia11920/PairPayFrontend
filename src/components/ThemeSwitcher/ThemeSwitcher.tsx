@@ -24,6 +24,7 @@ export function ThemeSwitcher() {
       color="secondary"
       startContent={<SunIcon />}
       endContent={<MoonIcon />}
-    ></Switch>
+      className="transition-all duration-200"
+    />
   );
 }

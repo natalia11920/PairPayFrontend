@@ -7,11 +7,6 @@ import {
   Spinner,
   CardFooter,
   Button,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
 } from "@nextui-org/react";
 import { useState, useEffect, useMemo } from "react";
 import { BillCreate, BillDisplay } from "../../types/Bill";
@@ -19,13 +14,13 @@ import {
   createBillAPI,
   getBillsCreatedAPI,
   getBillsParticipatedAPI,
-  deleteBillAPI,
 } from "../../services/BillServices";
 import { PaginationComponent } from "../../components/Pagination/PaginationComponent";
 import { toast } from "react-toastify";
 import { CreateBillModal } from "../../components/CreateBillModal/CreateBillModal";
 import { useAuth } from "../../contexts/AuthContext";
 import BillDetailsModal from "../../components/BillDetailsModal/BillDetailsModal";
+import { getDebtBalancesAPI } from "../../services/DebtServices";
 
 type Props = {};
 
@@ -43,8 +38,6 @@ const BillsPage = (props: Props) => {
 
   const [activeTab, setActiveTab] = useState<string>("created");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [billToDelete, setBillToDelete] = useState<number | null>(null);
 
   const [selectedBillId, setSelectedBillId] = useState<number | null>(null);
 
@@ -69,33 +62,13 @@ const BillsPage = (props: Props) => {
     }
   };
 
-  const handleDeleteBill = async () => {
-    if (!billToDelete) return;
-
-    try {
-      setLoading(true);
-      await deleteBillAPI(billToDelete);
-      await fetchData();
-      setIsDeleteModalOpen(false);
-      setBillToDelete(null);
-      toast.success("Bill deleted successfully!");
-    } catch (error) {
-      toast.error("Error deleting bill. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const openDeleteModal = (billId: number) => {
-    setBillToDelete(billId);
-    setIsDeleteModalOpen(true);
-  };
-
   const fetchData = async () => {
     setLoading(true);
     try {
       if (activeTab === "created") {
         const createdResponse = await getBillsCreatedAPI(createdPage, 4);
+        const response = await getDebtBalancesAPI();
+        console.log(response);
         setCreatedBills(createdResponse.bills);
         setCreatedTotalItems(createdResponse.totalItems);
       } else {
@@ -139,15 +112,23 @@ const BillsPage = (props: Props) => {
             <Card
               key={bill.id}
               isPressable
-              className="mb-4"
               onPress={() => handleBillClick(bill.id)}
+              className="w-full hover:shadow-md transition-shadow duration-200"
             >
-              <CardHeader className="flex justify-between items-center">
-                <h3>{bill.name}</h3>
-              </CardHeader>
-              <CardBody>
-                <p>Amount: ${bill.total_sum}</p>
-                <p>Created: {new Date(bill.created_at).toLocaleDateString()}</p>
+              <CardBody className="p-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-lg font-semibold">{bill.name}</h3>
+                    <p className="text-sm text-gray-400">
+                      Created: {new Date(bill.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-secondary">
+                      ${bill.total_sum}
+                    </p>
+                  </div>
+                </div>
               </CardBody>
             </Card>
           ))
@@ -163,15 +144,23 @@ const BillsPage = (props: Props) => {
             <Card
               key={bill.id}
               isPressable
-              className="mb-4"
               onPress={() => handleBillClick(bill.id)}
+              className="w-full hover:shadow-md transition-shadow duration-200"
             >
-              <CardHeader>
-                <h3>{bill.name}</h3>
-              </CardHeader>
-              <CardBody>
-                <p>Amount: ${bill.total_sum}</p>
-                <p>Created: {new Date(bill.created_at).toLocaleString()}</p>
+              <CardBody className="p-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-lg font-semibold">{bill.name}</h3>
+                    <p className="text-sm text-gray-400">
+                      Created: {new Date(bill.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-bold text-secondary">
+                      ${bill.total_sum}
+                    </p>
+                  </div>
+                </div>
               </CardBody>
             </Card>
           ))
@@ -185,14 +174,14 @@ const BillsPage = (props: Props) => {
 
   return (
     <div className="flex flex-col items-center mt-10">
-      <Card className="w-full max-w-3xl p-2">
-        <CardHeader className="flex flex-row justify-between">
+      <Card className="w-full max-w-3xl p-4">
+        <CardHeader className="flex flex-row justify-between items-center pb-4 border-b border-divider">
           <h2 className="text-2xl font-bold">Bills Manager</h2>
           <Button color="secondary" onPress={() => setIsModalOpen(true)}>
             Create new bill
           </Button>
         </CardHeader>
-        <CardBody>
+        <CardBody className="py-4">
           {loading ? (
             <div className="flex justify-center items-center h-48">
               <Spinner size="lg" color="secondary" />
@@ -202,17 +191,17 @@ const BillsPage = (props: Props) => {
               aria-label="Bills Tabs"
               selectedKey={activeTab}
               onSelectionChange={(key) => setActiveTab(key as string)}
-              className="block"
+              className="w-full"
             >
               {tabs.map((tab) => (
                 <Tab key={tab.id} title={tab.label}>
-                  <div className="flex flex-col gap-3">{tab.content}</div>
+                  <div className="grid gap-4 mt-4">{tab.content}</div>
                 </Tab>
               ))}
             </Tabs>
           )}
         </CardBody>
-        <CardFooter className="flex justify-end">
+        <CardFooter className="flex justify-end pt-4 border-t border-divider">
           {activeTab === "created" && (
             <PaginationComponent
               totalItems={createdTotalItems}

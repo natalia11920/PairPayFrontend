@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: Props) => {
 
       if (response) {
         console.log("Registration successful", response.data);
-        toast.success("Registration Success");
+        // toast.success("Registration Success");
         return response.data;
       }
 

@@ -164,3 +164,17 @@ export const getBillParticipantsAPI = async (billId: number | undefined) => {
     handleError;
   }
 };
+
+export const deleteBillParticipantAPI = async (
+  billId: number,
+  userId: number
+) => {
+  try {
+    const { data } = await apiClient.delete(
+      `/api/bills/${billId}/participant/${userId}`
+    );
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+};

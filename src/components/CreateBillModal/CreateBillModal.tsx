@@ -50,10 +50,10 @@ export const CreateBillModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size="lg">
       <ModalContent>
         <ModalHeader>
-          <h2 className="text-xl font-bold">Create New Bill</h2>
+          <h2 className="text-2xl font-bold">Create New Bill</h2>
         </ModalHeader>
         <ModalBody>
           <div className="flex flex-col gap-4">
@@ -62,30 +62,36 @@ export const CreateBillModal = ({
               placeholder="Enter bill name"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              variant="bordered"
             />
-            <Input
-              label="Label Name"
-              placeholder="Enter bill label"
-              value={label}
-              onChange={(e) => handleLabelChange(e.target.value)}
-            />
-            {label && filteredSuggestions.length > 0 && (
-              <ul className="rounded shadow-lg p-2">
-                {filteredSuggestions.map((suggestion) => (
-                  <li
-                    key={suggestion}
-                    className="cursor-pointer p-1 rounded hover:bg-gray-600"
-                    onClick={() => handleLabelSelection(suggestion)}
-                  >
-                    {suggestion}
-                  </li>
-                ))}
-              </ul>
-            )}
+            <div className="relative">
+              <Input
+                label="Label Name"
+                placeholder="Enter bill label"
+                value={label}
+                onChange={(e) => handleLabelChange(e.target.value)}
+                variant="bordered"
+              />
+              {label && filteredSuggestions.length > 0 && (
+                <div className="absolute z-10 w-full mt-1 bg-content1 rounded-md shadow-lg">
+                  <ul className="py-1">
+                    {filteredSuggestions.map((suggestion) => (
+                      <li
+                        key={suggestion}
+                        className="px-3 py-2 cursor-pointer hover:bg-content2"
+                        onClick={() => handleLabelSelection(suggestion)}
+                      >
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button color="danger" variant="light" onPress={onClose}>
+          <Button color="danger" variant="flat" onPress={onClose}>
             Cancel
           </Button>
           <Button color="secondary" onPress={() => onSubmit({ name, label })}>
