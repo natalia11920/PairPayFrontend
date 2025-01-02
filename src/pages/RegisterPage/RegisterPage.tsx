@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useAuth } from "../../contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 type RegisterFormInputs = {
   name: string;
@@ -35,7 +36,14 @@ const RegisterPage = () => {
   const [isVisible, setIsVisible] = React.useState(false);
 
   const handleRegistration = (form: RegisterFormInputs) => {
-    registerUser(form.name, form.surname, form.mail, form.password);
+    try {
+      registerUser(form.name, form.surname, form.mail, form.password);
+      toast.success(
+        "Account created successfully! Verify your email to login."
+      );
+    } catch (error) {
+      toast.error("Failed to create account.");
+    }
   };
 
   const toggleVisibility = () => setIsVisible(!isVisible);

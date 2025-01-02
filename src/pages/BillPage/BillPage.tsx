@@ -7,11 +7,6 @@ import {
   Spinner,
   CardFooter,
   Button,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
 } from "@nextui-org/react";
 import { useState, useEffect, useMemo } from "react";
 import { BillCreate, BillDisplay } from "../../types/Bill";
@@ -19,7 +14,6 @@ import {
   createBillAPI,
   getBillsCreatedAPI,
   getBillsParticipatedAPI,
-  deleteBillAPI,
 } from "../../services/BillServices";
 import { PaginationComponent } from "../../components/Pagination/PaginationComponent";
 import { toast } from "react-toastify";
@@ -44,8 +38,6 @@ const BillsPage = (props: Props) => {
 
   const [activeTab, setActiveTab] = useState<string>("created");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [billToDelete, setBillToDelete] = useState<number | null>(null);
 
   const [selectedBillId, setSelectedBillId] = useState<number | null>(null);
 
@@ -68,28 +60,6 @@ const BillsPage = (props: Props) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleDeleteBill = async () => {
-    if (!billToDelete) return;
-
-    try {
-      setLoading(true);
-      await deleteBillAPI(billToDelete);
-      await fetchData();
-      setIsDeleteModalOpen(false);
-      setBillToDelete(null);
-      toast.success("Bill deleted successfully!");
-    } catch (error) {
-      toast.error("Error deleting bill. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const openDeleteModal = (billId: number) => {
-    setBillToDelete(billId);
-    setIsDeleteModalOpen(true);
   };
 
   const fetchData = async () => {

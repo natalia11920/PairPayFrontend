@@ -4,39 +4,22 @@ import {
   CardHeader,
   Spinner,
   Button,
-  Modal,
-  Input,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-  ModalContent,
   Avatar,
   Chip,
 } from "@nextui-org/react";
-import {
-  getFriendsAPI,
-  sendFriendRequestAPI,
-} from "../../services/FriendShipServices";
+import { getFriendsAPI } from "../../services/FriendShipServices";
 import { Friend } from "../../types/Friends";
-import {
-  getUserInfoByEmailAPI,
-  getUsersEmailsAPI,
-} from "../../services/UserServices";
+import { getUsersEmailsAPI } from "../../services/UserServices";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
+import AddFriendModal from "../../components/AddFriendModal/AddFriendModal";
 
 const FriendsPage = () => {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newFriendEmail, setNewFriendEmail] = useState("");
-  const [requestStatus, setRequestStatus] = useState<string | null>(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [emailSuggestions, setEmailSuggestions] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [allEmails, setAllEmails] = useState<string[]>([]);
-  const [selectedUserInfo, setSelectedUserInfo] = useState<Friend | null>();
-  const [loadingUserInfo, setLoadingUserInfo] = useState(false);
 
   const fetchFriends = async () => {
     setLoading(true);
@@ -62,32 +45,6 @@ const FriendsPage = () => {
     return emails;
   };
 
-  const handleSendFriendRequest = async () => {
-    if (!newFriendEmail) {
-      setRequestStatus("Please enter a valid email.");
-      return;
-    }
-
-    try {
-      await sendFriendRequestAPI(newFriendEmail);
-      setRequestStatus(`Friend request sent to ${newFriendEmail}.`);
-      setNewFriendEmail("");
-      onClose();
-      toast.success("Friend request sent successfully!");
-    } catch (error) {
-      toast.error("Error sending friend request");
-      setRequestStatus("Failed to send friend request.");
-    }
-  };
-
-  const handleEmailChange = (email: string) => {
-    setNewFriendEmail(email);
-    const filteredSuggestions = allEmails.filter((suggestion) =>
-      suggestion.toLowerCase().includes(email.toLowerCase())
-    );
-    setEmailSuggestions(filteredSuggestions);
-  };
-
   const calculateNetDebt = (debtInfo: Friend["debt_info"]) => {
     if (Array.isArray(debtInfo)) {
       return debtInfo.reduce((acc, debt) => acc + (debt.net_debt || 0), 0);
@@ -110,24 +67,6 @@ const FriendsPage = () => {
       : `You owe $${amount.toFixed(2)}`;
   };
 
-  const fetchUserInfo = async (email: string) => {
-    setLoadingUserInfo(true);
-    try {
-      const userInfo = await getUserInfoByEmailAPI(email);
-      setSelectedUserInfo(userInfo);
-    } catch (error) {
-      toast.error("Failed to fetch user info.");
-    } finally {
-      setLoadingUserInfo(false);
-    }
-  };
-
-  const handleEmailSelection = (email: string) => {
-    setNewFriendEmail(email);
-    setEmailSuggestions([]);
-    fetchUserInfo(email);
-  };
-
   return (
     <div className="flex flex-col items-center mt-10 px-4 max-w-4xl mx-auto">
       <Card className="w-full shadow-lg">
@@ -135,7 +74,7 @@ const FriendsPage = () => {
           <h2 className="text-2xl font-bold">Friends List</h2>
           <Button
             color="secondary"
-            onPress={onOpen}
+            onPress={() => setIsModalOpen(true)}
             startContent={<Icon icon="mdi:account-plus" width={20} />}
           >
             Add New Friend
@@ -190,98 +129,11 @@ const FriendsPage = () => {
         </CardBody>
       </Card>
 
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        size="lg"
-        classNames={{
-          body: "py-6",
-          backdrop: "bg-[#292f46]/50 backdrop-opacity-40",
-          base: "border-[#292f46] bg-[#19172c] dark:bg-[#19172c] text-[#a8b0d3]",
-          header: "border-b-[1px] border-[#292f46]",
-          footer: "border-t-[1px] border-[#292f46]",
-          closeButton: "hover:bg-white/5 active:bg-white/10",
-        }}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>
-                <h2 className="text-lg font-bold">Add a New Friend</h2>
-              </ModalHeader>
-              <ModalBody>
-                <div className="flex flex-col gap-4">
-                  <Input
-                    // type="email"
-                    label="Friend's Email"
-                    placeholder="Enter friend's email"
-                    value={newFriendEmail}
-                    onChange={(e) => handleEmailChange(e.target.value)}
-                    variant="bordered"
-                    endContent={
-                      <Icon
-                        icon="mdi:email-outline"
-                        width={24}
-                        className="text-default-400 pointer-events-none flex-shrink-0"
-                      />
-                    }
-                  />
-                  {emailSuggestions.length > 0 && (
-                    <Card>
-                      <CardBody className="p-2">
-                        <ul className="divide-y divide-gray-200">
-                          {emailSuggestions.map((email) => (
-                            <li
-                              key={email}
-                              className="cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-150"
-                              onClick={() => handleEmailSelection(email)}
-                            >
-                              {email}
-                            </li>
-                          ))}
-                        </ul>
-                      </CardBody>
-                    </Card>
-                  )}
-                  {loadingUserInfo ? (
-                    <div className="flex justify-center">
-                      <Spinner size="sm" color="secondary" />
-                    </div>
-                  ) : selectedUserInfo ? (
-                    <Card className="bg-gray-100 dark:bg-gray-800">
-                      <CardBody>
-                        <h3 className="text-base font-semibold mb-2">
-                          User Details:
-                        </h3>
-                        <p className="text-sm">
-                          <span className="font-medium">Name:</span>{" "}
-                          {selectedUserInfo.name}
-                        </p>
-                        <p className="text-sm">
-                          <span className="font-medium">Surname:</span>{" "}
-                          {selectedUserInfo.surname}
-                        </p>
-                        <p className="text-sm">
-                          <span className="font-medium">Email:</span>{" "}
-                          {selectedUserInfo.mail}
-                        </p>
-                      </CardBody>
-                    </Card>
-                  ) : null}
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button color="secondary" onPress={handleSendFriendRequest}>
-                  Send Request
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <AddFriendModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        allEmails={allEmails}
+      />
     </div>
   );
 };
