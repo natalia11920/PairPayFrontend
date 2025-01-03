@@ -7,7 +7,7 @@ export const getBillsCreatedAPI = async (
   page: number = 1,
   perPage: number = 4,
   sortBy: string = "created_at",
-  sortOrder: string = "desc"
+  sortOrder: string = "desc",
 ): Promise<{
   bills: BillDisplay[];
   totalItems: number;
@@ -36,7 +36,7 @@ export const getBillsParticipatedAPI = async (
   page: number = 1,
   perPage: number = 5,
   sortBy: string = "created_at",
-  sortOrder: string = "desc"
+  sortOrder: string = "desc",
 ): Promise<{
   bills: BillDisplay[];
   totalItems: number;
@@ -83,7 +83,7 @@ export const inviteUserToBIllAPI = async () => {};
 
 export const inviteUsersToBillAPI = async (
   billId: number,
-  emails: string[]
+  emails: string[],
 ) => {
   try {
     const { data } = await apiClient.post(`/api/bills/${billId}/invite-users`, {
@@ -108,7 +108,7 @@ export const getBillInvitationsAPI = async () => {
 export const acceptBillInvitationAPI = async (invitationId: number) => {
   try {
     const { data } = await apiClient.post(
-      `/api/invitations/${invitationId}/accept`
+      `/api/invitations/${invitationId}/accept`,
     );
     return data;
   } catch (error) {
@@ -119,7 +119,7 @@ export const acceptBillInvitationAPI = async (invitationId: number) => {
 export const declineBillInvitationAPI = async (invitationId: number) => {
   try {
     const { data } = await apiClient.post(
-      `/api/invitations/${invitationId}/decline`
+      `/api/invitations/${invitationId}/decline`,
     );
     return data;
   } catch (error) {
@@ -128,7 +128,7 @@ export const declineBillInvitationAPI = async (invitationId: number) => {
 };
 
 export const getBillDetailsAPI = async (
-  billId: number
+  billId: number,
 ): Promise<BillDetails> => {
   try {
     const { data } = await apiClient.get(`/api/bills/${billId}`);
@@ -152,7 +152,7 @@ export const updateBillAPI = async (billId: number, bill: BillCreate) => {
 export const getFriendsNotInBillAPI = async (billId: number | undefined) => {
   try {
     const { data } = await apiClient.get(
-      `api/bills/${billId}/available-friends`
+      `api/bills/${billId}/available-friends`,
     );
     return data.friends;
   } catch (error) {
@@ -171,11 +171,11 @@ export const getBillParticipantsAPI = async (billId: number | undefined) => {
 
 export const deleteBillParticipantAPI = async (
   billId: number,
-  userId: number
+  userId: number,
 ) => {
   try {
     const { data } = await apiClient.delete(
-      `/api/bills/${billId}/participant/${userId}`
+      `/api/bills/${billId}/participant/${userId}`,
     );
     return data;
   } catch (error) {

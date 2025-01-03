@@ -2,7 +2,7 @@ import { SVGProps } from "react";
 import { JSX } from "react/jsx-runtime";
 
 export const SunIcon = (
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>,
 ) => (
   <svg
     focusable="false"

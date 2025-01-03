@@ -2,7 +2,7 @@ import { SVGProps } from "react";
 import { JSX } from "react/jsx-runtime";
 
 export const CopyDocumentIcon = (
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
+  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>,
 ) => (
   <svg
     fill="none"

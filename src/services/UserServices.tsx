@@ -6,7 +6,7 @@ import apiClient from "./ApiClient";
 export const getUsersEmailsAPI = async (): Promise<string[]> => {
   try {
     const { data } = await apiClient.get<string[]>(
-      "/api/user/get_users_emails"
+      "/api/user/get_users_emails",
     );
     return data;
   } catch (error) {
@@ -18,7 +18,7 @@ export const getUsersEmailsAPI = async (): Promise<string[]> => {
 export const getUserInfoByEmailAPI = async (email: string): Promise<Friend> => {
   try {
     const { data } = await apiClient.get(
-      `/api/user/get_user_by_email/${email}`
+      `/api/user/get_user_by_email/${email}`,
     );
     return data;
   } catch (error) {
@@ -74,12 +74,12 @@ export const deleteUser = async (): Promise<void> => {
 };
 
 export const updateUser = async (
-  updatedUserData: Partial<User>
+  updatedUserData: Partial<User>,
 ): Promise<void> => {
   try {
     const updateResp = await apiClient.post(
       "/api/user/update",
-      updatedUserData
+      updatedUserData,
     );
     console.log("User updated successfully:", updateResp.data);
   } catch (error) {
@@ -89,12 +89,12 @@ export const updateUser = async (
 };
 
 export const updateUsersByAdmin = async (
-  updateUserData: Partial<User>
+  updateUserData: Partial<User>,
 ): Promise<void> => {
   try {
     const response = await apiClient.post(
       "/api/user/admin/update",
-      updateUserData
+      updateUserData,
     );
 
     console.log("User updated successfully:", response.data);
@@ -108,7 +108,7 @@ export const makeAdmin = async (UserData: Partial<User>): Promise<void> => {
   try {
     const assignAdminResp = await apiClient.post(
       "/api/user/admin/make_admin",
-      UserData
+      UserData,
     );
     console.log("New admin role assigned:", assignAdminResp.data);
   } catch (error) {
@@ -118,7 +118,7 @@ export const makeAdmin = async (UserData: Partial<User>): Promise<void> => {
 };
 
 export const getUsers = async (
-  email: string
+  email: string,
 ): Promise<{
   user: User[];
   id: number;

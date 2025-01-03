@@ -32,7 +32,7 @@ export const registerAPI = async (
   name: string,
   surname: string,
   mail: string,
-  password: string
+  password: string,
 ) => {
   try {
     const data = await axios.post<UserToken>(api + "/register", {

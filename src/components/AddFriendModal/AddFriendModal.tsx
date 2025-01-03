@@ -36,7 +36,7 @@ const AddFriendModal = ({
   const handleEmailChange = (email: string) => {
     setNewFriendEmail(email);
     const filteredSuggestions = allEmails.filter((suggestion) =>
-      suggestion.toLowerCase().includes(email.toLowerCase())
+      suggestion.toLowerCase().includes(email.toLowerCase()),
     );
     setEmailSuggestions(filteredSuggestions);
   };

@@ -41,7 +41,7 @@ export const CreateBillModal = ({
 
   const filteredSuggestions = label
     ? labelSuggestions.filter((suggestion) =>
-        suggestion.toLowerCase().includes(label.toLowerCase())
+        suggestion.toLowerCase().includes(label.toLowerCase()),
       )
     : labelSuggestions;
 
