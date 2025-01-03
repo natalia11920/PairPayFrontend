@@ -4,12 +4,12 @@ import apiClient from "./ApiClient";
 
 export const createExpenseAPI = async (
   billId: number,
-  expense: ExpenseCreate
+  expense: ExpenseCreate,
 ) => {
   try {
     const { data } = await apiClient.post(
       `/api/bill/${billId}/expense/create`,
-      expense
+      expense,
     );
     return data;
   } catch (error) {
@@ -20,7 +20,7 @@ export const createExpenseAPI = async (
 export const getExpenseAPI = async (billId: number, expenseId: number) => {
   try {
     const { data } = await apiClient.get(
-      `/api/bill/${billId}/expenses/${expenseId}`
+      `/api/bill/${billId}/expenses/${expenseId}`,
     );
     return data.expense;
   } catch (error) {

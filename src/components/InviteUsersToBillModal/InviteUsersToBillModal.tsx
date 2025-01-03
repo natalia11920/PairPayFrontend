@@ -37,7 +37,7 @@ export const InviteUsersToBillModal = ({
 }: InviteUsersToBillModalProps) => {
   const [loading, setLoading] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(
-    new Set(initialSelectedUsers)
+    new Set(initialSelectedUsers),
   );
   const [friends, setFriends] = useState<Friend[]>([]);
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);

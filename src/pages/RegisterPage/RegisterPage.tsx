@@ -39,7 +39,7 @@ const RegisterPage = () => {
     try {
       registerUser(form.name, form.surname, form.mail, form.password);
       toast.success(
-        "Account created successfully! Verify your email to login."
+        "Account created successfully! Verify your email to login.",
       );
     } catch (error) {
       toast.error("Failed to create account.");

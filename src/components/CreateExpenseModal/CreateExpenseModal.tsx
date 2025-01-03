@@ -46,7 +46,7 @@ const AddExpenseModal = ({
     ...new Map(
       [...billParticipants, billCreator]
         .filter(Boolean)
-        .map((user) => [user?.id, user])
+        .map((user) => [user?.id, user]),
     ).values(),
   ];
 

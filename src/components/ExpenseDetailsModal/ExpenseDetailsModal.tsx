@@ -56,7 +56,7 @@ export const ExpenseDetailsModal = ({
   onExpenseDeleted,
 }: ExpenseDetailsModalProps) => {
   const [expenseDetails, setExpenseDetails] = useState<ExpenseDetails | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);

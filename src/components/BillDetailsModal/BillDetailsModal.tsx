@@ -328,7 +328,7 @@ export const BillDetailsModal = ({
                                   </div>
                                 </CardBody>
                               </Card>
-                            )
+                            ),
                           )}
                         </div>
                       </div>

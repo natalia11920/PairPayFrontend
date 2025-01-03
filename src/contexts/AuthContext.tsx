@@ -14,7 +14,7 @@ type AuthContextType = {
     name: string,
     surname: string,
     email: string,
-    password: string
+    password: string,
   ) => void;
   loginUser: (email: string, password: string) => void;
   logout: () => void;
@@ -41,9 +41,8 @@ export const AuthProvider = ({ children }: Props) => {
       setUser(JSON.parse(storedUser));
       setAccessToken(storedAccessToken);
       setRefreshToken(storedRefreshToken);
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${storedAccessToken}`;
+      axios.defaults.headers.common["Authorization"] =
+        `Bearer ${storedAccessToken}`;
     }
     setIsReady(true);
   }, []);
@@ -52,7 +51,7 @@ export const AuthProvider = ({ children }: Props) => {
     name: string,
     surname: string,
     email: string,
-    password: string
+    password: string,
   ) => {
     try {
       const response = await registerAPI(name, surname, email, password);
@@ -90,9 +89,8 @@ export const AuthProvider = ({ children }: Props) => {
           setRefreshToken(response.data.refresh_token);
           setUser(userObj);
 
-          axios.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${response.data.access_token}`;
+          axios.defaults.headers.common["Authorization"] =
+            `Bearer ${response.data.access_token}`;
 
           toast.success("Login Success");
           navigate("/home");

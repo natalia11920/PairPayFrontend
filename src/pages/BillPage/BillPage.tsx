@@ -74,7 +74,7 @@ const BillsPage = (props: Props) => {
       } else {
         const participatedResponse = await getBillsParticipatedAPI(
           participatedPage,
-          4
+          4,
         );
         setParticipatedBills(participatedResponse.bills);
         setParticipatedTotalItems(participatedResponse.totalItems);
@@ -169,7 +169,7 @@ const BillsPage = (props: Props) => {
         ),
       },
     ],
-    [createdBills, participatedBills]
+    [createdBills, participatedBills],
   );
 
   return (

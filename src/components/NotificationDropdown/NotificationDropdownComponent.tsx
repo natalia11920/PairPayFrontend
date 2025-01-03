@@ -45,7 +45,7 @@ const NotificationDropdown = () => {
           id: request.id,
           mail: request.mail,
           user_id: request.user_id,
-        }))
+        })),
       );
 
       setBillInvitations(billInvites || []);
@@ -60,7 +60,7 @@ const NotificationDropdown = () => {
     friendInvitations.filter((inv) => !acceptedFriendIds.includes(inv.id))
       .length +
     billInvitations.filter(
-      (inv) => !acceptedBillIds.includes(inv.invitation_id)
+      (inv) => !acceptedBillIds.includes(inv.invitation_id),
     ).length;
 
   useEffect(() => {
@@ -87,7 +87,7 @@ const NotificationDropdown = () => {
     try {
       await declineRequestAPI(id);
       setFriendInvitations((prev) =>
-        prev.filter((invitation) => invitation.id !== id)
+        prev.filter((invitation) => invitation.id !== id),
       );
       toast.info("Friend request declined");
     } catch (error) {
@@ -109,7 +109,7 @@ const NotificationDropdown = () => {
     try {
       await declineBillInvitationAPI(id);
       setBillInvitations((prev) =>
-        prev.filter((invitation) => invitation.invitation_id !== id)
+        prev.filter((invitation) => invitation.invitation_id !== id),
       );
       toast.info("Bill invitation declined");
     } catch (error) {

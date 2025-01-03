@@ -27,7 +27,7 @@ apiClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 apiClient.interceptors.response.use(
@@ -59,7 +59,7 @@ apiClient.interceptors.response.use(
             headers: {
               Authorization: `Bearer ${refreshToken}`,
             },
-          }
+          },
         );
 
         const { access_token } = response.data;
@@ -83,7 +83,7 @@ apiClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;
