@@ -1,5 +1,3 @@
-import { Key } from "react";
-
 export type UserToken = {
   user: User;
   access_token: string;

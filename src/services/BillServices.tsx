@@ -5,7 +5,9 @@ import apiClient from "./ApiClient";
 
 export const getBillsCreatedAPI = async (
   page: number = 1,
-  perPage: number = 4
+  perPage: number = 4,
+  sortBy: string = "created_at",
+  sortOrder: string = "desc"
 ): Promise<{
   bills: BillDisplay[];
   totalItems: number;
@@ -14,7 +16,7 @@ export const getBillsCreatedAPI = async (
 }> => {
   try {
     const { data } = await apiClient.get("/api/bills/created", {
-      params: { page, perPage },
+      params: { page, perPage, sortBy, sortOrder },
     });
     console.log(data);
 
@@ -32,7 +34,9 @@ export const getBillsCreatedAPI = async (
 
 export const getBillsParticipatedAPI = async (
   page: number = 1,
-  perPage: number = 5
+  perPage: number = 5,
+  sortBy: string = "created_at",
+  sortOrder: string = "desc"
 ): Promise<{
   bills: BillDisplay[];
   totalItems: number;
@@ -41,7 +45,7 @@ export const getBillsParticipatedAPI = async (
 }> => {
   try {
     const { data } = await apiClient.get("/api/bills/assigned", {
-      params: { page, perPage },
+      params: { page, perPage, sortBy, sortOrder },
     });
     console.log(data);
 

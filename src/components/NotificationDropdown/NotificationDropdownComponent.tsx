@@ -145,6 +145,7 @@ const NotificationDropdown = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Avatar
+                      alt={invitation.mail}
                       name={invitation.mail}
                       size="sm"
                       color="secondary"

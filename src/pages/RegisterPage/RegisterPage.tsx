@@ -49,8 +49,8 @@ const RegisterPage = () => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-md">
+    <div className="flex flex-col items-center justify-center h-[calc(100vh-64px)] p-4">
+      <Card className="w-full max-w-md max-h-[calc(100vh-96px)] overflow-y-auto">
         <CardHeader className="flex flex-col gap-1 items-center">
           <h1 className="text-2xl font-bold">Create an Account</h1>
           <p className="text-sm text-default-500">Sign up to get started</p>

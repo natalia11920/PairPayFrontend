@@ -25,7 +25,7 @@ const NavbarComponent = () => {
     <Navbar
       isBordered
       isBlurred
-      className="bg-background/60 backdrop-blur-md backdrop-saturate-150 border-b border-divider"
+      className="backdrop-blur-md backdrop-saturate-150 border-b border-divider h-16"
     >
       <NavbarBrand>
         <NextUILink
@@ -66,7 +66,9 @@ const NavbarComponent = () => {
                     className="transition-transform"
                     color="secondary"
                     size="sm"
-                    icon={`${user?.name}`}
+                    icon={user?.name}
+                    alt={user?.name}
+                    name={user?.name}
                   />
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Profile Actions" variant="flat">

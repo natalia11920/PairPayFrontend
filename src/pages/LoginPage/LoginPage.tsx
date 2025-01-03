@@ -54,13 +54,13 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+    <div className="flex flex-col items-center justify-center h-[calc(100vh-64px)] p-4">
       {loading && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <Spinner size="lg" color="secondary" />
         </div>
       )}
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md max-h-[calc(100vh-96px)] overflow-y-auto">
         <CardHeader className="flex flex-col gap-1 items-center">
           <h1 className="text-2xl font-bold">Welcome Back</h1>
           <p className="text-sm text-default-500">Log in to your account</p>
@@ -73,6 +73,7 @@ const LoginPage = () => {
             <Input
               label="Email Address"
               placeholder="Enter your email"
+              autoComplete="curent-email"
               type="email"
               variant="bordered"
               isInvalid={!!errors.mail}
@@ -87,6 +88,7 @@ const LoginPage = () => {
               label="Password"
               placeholder="Enter your password"
               variant="bordered"
+              autoComplete="current-password"
               isInvalid={!!errors.password}
               color={errors.password ? "danger" : "default"}
               errorMessage={errors.password?.message}

@@ -97,7 +97,9 @@ const FriendsPage = () => {
                     <CardBody className="flex flex-row justify-between items-center p-4">
                       <div className="flex items-center gap-3">
                         <Avatar
-                          icon={`${friend.name}`}
+                          alt={friend.name}
+                          name={friend.name}
+                          icon={friend.name}
                           size="md"
                           color="secondary"
                         />
