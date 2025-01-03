@@ -198,7 +198,9 @@ const AddExpenseModal = ({
                   >
                     <div className="flex items-center gap-2">
                       <Avatar
-                        icon={`${user?.name}`}
+                        alt={user?.name}
+                        name={user?.name}
+                        icon={user?.name}
                         size="sm"
                         color="secondary"
                       />

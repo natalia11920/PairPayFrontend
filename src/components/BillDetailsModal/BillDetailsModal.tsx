@@ -227,16 +227,18 @@ export const BillDetailsModal = ({
                           >
                             Show all
                           </Button>
-                          <Button
-                            isIconOnly
-                            color="secondary"
-                            variant="flat"
-                            size="sm"
-                            onPress={() => setShowInviteModal(true)}
-                            aria-label="Invite Users"
-                          >
-                            <Icon icon="mdi:plus" width={18} height={18} />
-                          </Button>
+                          {billDetails.user_creator.id === userId && (
+                            <Button
+                              isIconOnly
+                              color="secondary"
+                              variant="flat"
+                              size="sm"
+                              onPress={() => setShowInviteModal(true)}
+                              aria-label="Invite Users"
+                            >
+                              <Icon icon="mdi:plus" width={18} height={18} />
+                            </Button>
+                          )}
                         </div>
                       </div>
                       <div className="max-h-32 overflow-y-auto">
@@ -248,7 +250,9 @@ export const BillDetailsModal = ({
                             >
                               <div className="flex items-center gap-3">
                                 <Avatar
-                                  name={`${user.name} ${user.surname}`}
+                                  name={user.name}
+                                  icon={user.name}
+                                  alt={user.name}
                                   size="sm"
                                   color="secondary"
                                 />

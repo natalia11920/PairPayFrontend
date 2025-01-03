@@ -160,10 +160,11 @@ export const ExpenseDetailsModal = ({
                           >
                             <div className="flex items-center gap-3">
                               <Avatar
-                                name={`${participant.user.name} ${participant.user.surname}`}
+                                alt={participant.user.name}
+                                name={participant.user.name}
                                 size="sm"
                                 color="secondary"
-                                icon={`${participant.user.name.charAt(0)}`}
+                                icon={participant.user.name}
                               />
                               <div>
                                 <p className="font-medium">

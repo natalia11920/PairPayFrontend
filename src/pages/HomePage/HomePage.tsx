@@ -139,6 +139,7 @@ export default function HomePage() {
               <div className="flex flex-wrap gap-2">
                 {friends.map((friend) => (
                   <Avatar
+                    alt={friend.name}
                     key={friend.id}
                     name={friend.name}
                     color="secondary"
