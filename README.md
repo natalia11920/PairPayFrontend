@@ -1,7 +1,7 @@
 # PairPayFrontend
 
-## Description
-This project implements a frontend application for splitting the costs of group shopping.
+## Opis
+Ten projekt implementuje aplikację frontendową do dzielenia kosztów grupowych zakupów.
 
 ## Instrukcja instalacji
 
@@ -21,18 +21,18 @@ This project implements a frontend application for splitting the costs of group 
    npm run dev
    ```
 
-To set up with Docker:
-1. Build the Docker image:
+Aby skonfigurować Dockera:
+1. Zbuduj obraz Dockera:
    ```bash
    docker build -t frontend-app .
    ```
-2. Run the container:
+2. Uruchom kontener:
    ```bash
    docker run -p 80:80 frontend-app
    ```
 
 
-## Authors
+## Autorzy
 - Paweł Wójtowicz
 - Natalia Stręk
 - Jakub Kula
