@@ -21,7 +21,7 @@ import {
 import { SearchIcon } from "../../components/SearchIcon/SearchIcon";
 import * as Yup from "yup";
 
-type Props = {}; // kom probny3
+type Props = {}; // kom probny4
 
 const UserPage = (props: Props) => {
   const [loggedUser, setLoggedUser] = useState<User | null>(null);
