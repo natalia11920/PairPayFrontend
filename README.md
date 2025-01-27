@@ -5,6 +5,7 @@
 ![typescript]
 ![tailwind]
 ![vite]
+![docker]
 ## Opis
 Ten projekt implementuje aplikację frontendową do dzielenia kosztów grupowych zakupów.
 
@@ -47,3 +48,4 @@ Aby skonfigurować Dockera:
 [vite]: https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E
 [tailwind]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
 [typescript]: https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
+[docker]: https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white
