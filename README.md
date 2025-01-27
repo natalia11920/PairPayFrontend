@@ -7,7 +7,7 @@ Ten projekt implementuje aplikację frontendową do dzielenia kosztów grupowych
 
 1. **Klonowanie repozytorium**:
    ```bash
-   git clone [https://github.com/natalia11920/PairPayFrontend]
+   git clone https://github.com/natalia11920/PairPayFrontend
    cd PairPayFrontend
    ```
 
